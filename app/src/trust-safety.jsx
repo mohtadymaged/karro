@@ -206,7 +206,7 @@ const TermsGate = ({onAccept}) => {
           </span>
           <span style={{fontSize:13,color:'#0A3540',fontWeight:600,lineHeight:1.4}}>I have read and agree to the Terms of Use and Privacy Policy</span>
         </button>
-        <button onClick={accept} disabled={!agreed} className="btn-em" style={{width:'100%',padding:'16px',borderRadius:100,fontSize:15,opacity:agreed?1:0.45}}>Agree and continue</button>
+        <button onClick={accept} disabled={!agreed} style={{width:'100%',padding:'16px',borderRadius:100,fontSize:15,fontWeight:700,letterSpacing:'0.02em',border:'none',fontFamily:"'Rubik',sans-serif",background:agreed?'linear-gradient(135deg,#14A09B,#0D7E7A)':'rgba(10,53,64,0.12)',color:agreed?'#FFFFFF':'rgba(10,53,64,0.4)',boxShadow:agreed?'0 2px 8px rgba(20,160,155,0.3)':'none',transition:'all .2s'}}>Agree and continue</button>
       </div>
     </div>
   );

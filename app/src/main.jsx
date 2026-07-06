@@ -85,4 +85,17 @@ function NativeApp() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(isNative ? <NativeApp /> : <StagedApp />);
+// Phone browsers and installed PWAs also get the full-screen app;
+// the decorative device frame is desktop-only.
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isPhoneViewport = window.matchMedia('(max-width: 640px)').matches;
+const fullScreen = isNative || isStandalone || isPhoneViewport;
+
+ReactDOM.createRoot(document.getElementById('root')).render(fullScreen ? <NativeApp /> : <StagedApp />);
+
+// PWA: register the service worker on the real web only (not inside Capacitor)
+if (!isNative && 'serviceWorker' in navigator && window.location.protocol === 'https:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {/* non-fatal */});
+  });
+}
