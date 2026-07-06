@@ -3,6 +3,8 @@ import { SELLERS, CATS, LISTINGS } from './data.js';
 import { ItemImage, Stars, Confetti } from './shared.jsx';
 import { ArrowLeft, X } from './icons.jsx';
 import { api } from './api.js';
+import { shareItem } from './share-util.js';
+import { ReportSheet, BlockSheet } from './trust-safety.jsx';
 /* Item detail page */
 const { useState, useEffect, useRef } = React;
 
@@ -18,6 +20,9 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
   const [offerOpen,setOfferOpen] = useState(false);
   const [offerAmt,setOfferAmt]   = useState('');
   const [offerDone,setOfferDone] = useState(false);
+  const [optionsOpen,setOptionsOpen] = useState(false);
+  const [reportOpen,setReportOpen]   = useState(false);
+  const [blockOpen,setBlockOpen]     = useState(false);
   const scrollRef = useRef();
   const inputRef  = useRef();
   const galRef    = useRef();
@@ -72,6 +77,17 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
 
   const chips = ['Is this still available?','Can I pick up today?','Would you take a bit less?'];
 
+  const handleShare = async () => {
+    try {
+      const result = await shareItem(item);
+      if (result?.copied) {
+        showToast('📋 Copied to clipboard!');
+      }
+    } catch (err) {
+      showToast('Share failed');
+    }
+  };
+
   return (
     <div style={{flex:1,display:'flex',flexDirection:'column',minHeight:0,position:'relative'}}>
       <div ref={scrollRef} style={{flex:1,overflowY:'auto',paddingBottom:96}} className="sh">
@@ -95,10 +111,13 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
               <ArrowLeft size={18} strokeWidth={2.4}/>
             </button>
             <div style={{display:'flex',gap:8,pointerEvents:'auto'}}>
+              <button onClick={handleShare} className="cp" style={{width:38,height:38,borderRadius:12,background:'rgba(10,53,64,0.55)',backdropFilter:'blur(8px)',border:'none',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}}>
+                <span>↗️</span>
+              </button>
               <button onClick={()=>{setSaved(s=>!s);showToast(saved?'Removed from saved':'❤️ Saved!');}} className="cp" style={{width:38,height:38,borderRadius:12,background:'rgba(10,53,64,0.55)',backdropFilter:'blur(8px)',border:'none',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}}>
                 <span style={{filter:saved?'none':'grayscale(1) opacity(0.85)',display:'inline-block',animation:saved?'tabPop .35s cubic-bezier(0.34,1.56,0.64,1)':'none'}}>❤️</span>
               </button>
-              <button onClick={()=>showToast('🔗 Link copied!')} className="cp" style={{width:38,height:38,borderRadius:12,background:'rgba(10,53,64,0.55)',backdropFilter:'blur(8px)',border:'none',display:'flex',alignItems:'center',justifyContent:'center',fontSize:15,color:'#FFFFFF'}}>↗</button>
+              <button onClick={()=>setOptionsOpen(true)} aria-label="More options" className="cp" style={{width:38,height:38,borderRadius:12,background:'rgba(10,53,64,0.55)',backdropFilter:'blur(8px)',border:'none',display:'flex',alignItems:'center',justifyContent:'center',fontSize:15,fontWeight:800,color:'#FFFFFF',letterSpacing:'0.05em'}}>···</button>
             </div>
           </div>
           {pics.length>1&&(
@@ -279,6 +298,32 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
           </div>
         </div>
       )}
+
+      {/* Options sheet — report / block (App Store 1.2) */}
+      {optionsOpen&&(
+        <div style={{position:'fixed',inset:0,zIndex:65,display:'flex',alignItems:'flex-end',justifyContent:'center',background:'rgba(10,53,64,0.6)',backdropFilter:'blur(4px)',animation:'fadeIn .25s ease-out'}} onClick={()=>setOptionsOpen(false)}>
+          <div className="su" style={{width:'100%',maxWidth:440,background:'var(--bg)',borderRadius:'26px 26px 0 0',padding:'10px 22px 44px'}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:40,height:4,borderRadius:100,background:'rgba(20,160,155,0.2)',margin:'0 auto 16px'}}></div>
+            <button onClick={()=>{setOptionsOpen(false);setReportOpen(true);}} style={{width:'100%',display:'flex',alignItems:'center',gap:12,padding:'15px 16px',background:'var(--card)',border:'1px solid rgba(20,160,155,0.12)',borderRadius:14,textAlign:'left',marginBottom:8}}>
+              <span style={{fontSize:17}}>⚑</span>
+              <div>
+                <div style={{fontSize:13.5,fontWeight:700,color:'var(--ink)'}}>Report this listing</div>
+                <div style={{fontSize:11.5,color:'var(--ink2)'}}>Confidential — reviewed within 24 hours</div>
+              </div>
+            </button>
+            <button onClick={()=>{setOptionsOpen(false);setBlockOpen(true);}} style={{width:'100%',display:'flex',alignItems:'center',gap:12,padding:'15px 16px',background:'rgba(232,81,60,0.06)',border:'1px solid rgba(232,81,60,0.15)',borderRadius:14,textAlign:'left',marginBottom:8}}>
+              <span style={{fontSize:17}}>🚫</span>
+              <div>
+                <div style={{fontSize:13.5,fontWeight:700,color:'#E8513C'}}>Block {seller.name.split(' ')[0]}</div>
+                <div style={{fontSize:11.5,color:'var(--ink2)'}}>Hide their listings and stop all contact</div>
+              </div>
+            </button>
+            <button onClick={()=>setOptionsOpen(false)} style={{width:'100%',padding:'14px',borderRadius:100,fontSize:14,fontWeight:700,background:'transparent',color:'var(--ink2)',border:'1.5px solid rgba(20,160,155,0.2)',marginTop:4}}>Cancel</button>
+          </div>
+        </div>
+      )}
+      {reportOpen&&<ReportSheet item={item} onClose={()=>setReportOpen(false)}/>}
+      {blockOpen&&<BlockSheet sellerName={seller.name.split(' ')[0]} sellerId={item.sellerId||(sellerRec&&sellerRec.id)||item.seller} onClose={()=>setBlockOpen(false)} onBlocked={()=>{showToast('Member blocked');setTimeout(onBack,900);}}/>}
 
       {/* Toast */}
       {toast&&(

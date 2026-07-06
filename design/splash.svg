@@ -1,0 +1,12 @@
+<svg width="2732" height="2732" viewBox="0 0 2732 2732" xmlns="http://www.w3.org/2000/svg">
+  <rect width="2732" height="2732" fill="#0A3540"/>
+  <!-- tag mark, centered on its own visual bounds (center ≈ 554,512), scaled up -->
+  <g transform="translate(1366 1366) scale(0.85) translate(-554 -512) rotate(-12 554 512)">
+    <path d="M 288 372 L 592 372 L 820 512 L 592 652 L 288 652 Z"
+          fill="#FFFFFF" stroke="#FFFFFF" stroke-width="68" stroke-linejoin="round"/>
+    <circle cx="360" cy="512" r="60" fill="#FF6A55"/>
+    <circle cx="360" cy="512" r="28" fill="#0A3540"/>
+    <rect x="484" y="446" width="212" height="50" rx="25" fill="#0A3540"/>
+    <rect x="484" y="530" width="132" height="50" rx="25" fill="#14A09B"/>
+  </g>
+</svg>

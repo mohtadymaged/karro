@@ -8,9 +8,21 @@
     "build": "npm --prefix server install && npm --prefix app install && npm --prefix app run build",
     "start": "node server/index.js",
     "dev:api": "npm --prefix server run dev",
-    "dev:web": "npm --prefix app run dev"
+    "dev:web": "npm --prefix app run dev",
+    "build:ios": "npm --prefix app run build && npx cap sync ios",
+    "ios:open": "npx cap open ios",
+    "ios:build": "npm --prefix app run build && npx cap sync ios && npx cap open ios",
+    "ios:sync": "npx cap sync ios"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@capacitor/camera": "^8.2.0",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/ios": "^8.4.1",
+    "@capacitor/push-notifications": "^8.1.1",
+    "@capacitor/share": "^8.0.1"
   }
 }
