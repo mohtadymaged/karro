@@ -1,0 +1,17 @@
+{
+  "appId": "com.gouna.karro",
+  "appName": "Karro",
+  "webDir": "app/dist",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "capacitor"
+  },
+  "ios": {
+    "contentInset": "automatic"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}
