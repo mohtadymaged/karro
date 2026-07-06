@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karro — Brand Identity Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lagoon:#14A09B;
+    --lagoon-dark:#0D7E7A;
+    --deep:#0A3540;
+    --coral:#FF6A55;
+    --coral-dark:#E8513C;
+    --sand:#F3E9D7;
+    --foam:#E9F6F5;
+    --white:#FFFFFF;
+    --ink:#0A3540;
+    --ink-soft:rgba(10,53,64,.62);
+    --radius:20px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Rubik',sans-serif;
+    color:var(--ink);
+    background:var(--white);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Baloo Bhaijaan 2',sans-serif;line-height:1.15}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 32px}
+  section{padding:88px 0}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--lagoon-dark);margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:26px;height:3px;border-radius:3px;background:var(--coral)}
+  h2{font-size:clamp(30px,4vw,44px);font-weight:700;margin-bottom:14px}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:640px}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:linear-gradient(160deg,var(--deep) 0%,#0E4B54 55%,var(--lagoon-dark) 130%);
+    color:#fff;padding:110px 0 0;position:relative;overflow:hidden;
+  }
+  .hero .wrap{position:relative;z-index:2;text-align:center;padding-bottom:96px}
+  .hero-mark{width:150px;height:150px;margin:0 auto 26px;display:block;filter:drop-shadow(0 18px 40px rgba(0,0,0,.32))}
+  .hero h1{font-size:clamp(56px,9vw,104px);font-weight:800;letter-spacing:-.01em}
+  .hero .ar{font-size:clamp(26px,3.6vw,40px);font-weight:600;color:#7ED8D3;margin-top:2px}
+  .hero .tag{font-size:clamp(17px,2vw,21px);color:rgba(255,255,255,.78);margin-top:20px;font-weight:300}
+  .hero .tag strong{color:var(--coral);font-weight:600}
+  .hero-badges{display:flex;gap:12px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+  .hero-badges span{
+    font-size:13px;font-weight:500;padding:9px 18px;border-radius:100px;
+    border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);backdrop-filter:blur(4px);
+  }
+  .hero svg.waves{display:block;width:100%;height:70px;position:relative;z-index:1}
+
+  /* ---------- NAME ---------- */
+  .name-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start;margin-top:44px}
+  .name-card{background:var(--foam);border-radius:var(--radius);padding:36px}
+  .name-card .big{font-family:'Baloo Bhaijaan 2';font-size:56px;font-weight:800;color:var(--lagoon-dark);line-height:1}
+  .name-card .big span{color:var(--coral)}
+  .name-card .ar-big{font-family:'Baloo Bhaijaan 2';font-size:34px;font-weight:700;margin-top:4px;color:var(--deep)}
+  .name-card p{margin-top:18px;color:var(--ink-soft);font-size:15.5px}
+  .alt-list{display:flex;flex-direction:column;gap:12px}
+  .alt{
+    display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+    padding:14px 20px;border:1px solid rgba(10,53,64,.12);border-radius:14px;
+  }
+  .alt b{font-family:'Baloo Bhaijaan 2';font-size:18px;font-weight:700;white-space:nowrap}
+  .alt small{color:var(--ink-soft);font-size:13px;text-align:right;max-width:62%}
+  .alt-label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ink-soft);margin-bottom:10px}
+
+  /* ---------- LOGO ---------- */
+  .logo-stage{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px}
+  .logo-cell{
+    border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    min-height:300px;gap:8px;padding:32px;position:relative;
+  }
+  .logo-cell .cap{
+    position:absolute;top:18px;left:22px;font-size:12px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;opacity:.55;
+  }
+  .lc-light{background:var(--foam)}
+  .lc-deep{background:var(--deep);color:#fff}
+  .lc-coral{background:var(--coral);color:#fff}
+  .logo-construction{margin-top:28px;background:#fff;border:1px dashed rgba(10,53,64,.25);border-radius:var(--radius);padding:40px;display:flex;gap:48px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .logo-construction p{font-size:14.5px;color:var(--ink-soft);max-width:400px}
+  .donts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+  .dont{
+    background:var(--foam);border-radius:14px;padding:22px;display:flex;flex-direction:column;
+    align-items:center;gap:12px;text-align:center;font-size:13px;color:var(--ink-soft);
+  }
+  .dont .x{color:var(--coral-dark);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+
+  /* ---------- COLORS ---------- */
+  .swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:44px}
+  .swatch{border-radius:16px;overflow:hidden;border:1px solid rgba(10,53,64,.08)}
+  .swatch .chip{height:130px}
+  .swatch .meta{padding:14px 16px;background:#fff}
+  .swatch .meta b{font-family:'Baloo Bhaijaan 2';font-size:15px;display:block}
+  .swatch .meta code{font-size:12.5px;color:var(--ink-soft);font-family:'Rubik'}
+  .swatch .meta small{display:block;font-size:11.5px;color:var(--ink-soft);margin-top:4px}
+  .ratio-bar{display:flex;height:52px;border-radius:100px;overflow:hidden;margin-top:34px;box-shadow:0 6px 18px rgba(10,53,64,.12)}
+  .ratio-bar div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff}
+
+  /* ---------- TYPE ---------- */
+  .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px}
+  .type-card{background:var(--foam);border-radius:var(--radius);padding:36px}
+  .type-card .role{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--lagoon-dark)}
+  .type-card .face{font-size:34px;font-weight:700;margin:10px 0 4px}
+  .type-card .sample{margin-top:22px;padding-top:22px;border-top:1px solid rgba(10,53,64,.12)}
+  .t-display .face,.t-display .sample{font-family:'Baloo Bhaijaan 2'}
+  .t-body .sample{font-family:'Rubik'}
+  .type-card .sample .l1{font-size:28px;font-weight:700}
+  .type-card .sample .l2{font-size:16px;margin-top:8px;color:var(--ink-soft)}
+  .type-card .sample .ar-sample{font-size:24px;margin-top:14px;font-weight:600}
+  .scale{margin-top:28px;background:#fff;border-radius:var(--radius);padding:36px;border:1px solid rgba(10,53,64,.08)}
+  .scale-row{display:flex;align-items:baseline;gap:24px;padding:12px 0;border-bottom:1px solid rgba(10,53,64,.07)}
+  .scale-row:last-child{border-bottom:none}
+  .scale-row code{font-size:12px;color:var(--ink-soft);width:170px;flex-shrink:0}
+
+  /* ---------- VOICE ---------- */
+  .voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+  .voice-card{background:var(--foam);border-radius:var(--radius);padding:30px}
+  .voice-card h3{font-size:20px;color:var(--lagoon-dark);margin-bottom:10px}
+  .voice-card p{font-size:14.5px;color:var(--ink-soft)}
+  .voice-card .say{margin-top:16px;font-size:14px;background:#fff;border-radius:12px;padding:12px 16px;font-weight:500}
+  .voice-card .say::before{content:"✓ ";color:var(--lagoon);font-weight:700}
+
+  /* ---------- UI PREVIEW ---------- */
+  .ui-section{background:var(--deep);color:#fff}
+  .ui-section .eyebrow{color:#7ED8D3}
+  .ui-section .lede{color:rgba(255,255,255,.65)}
+  .ui-flex{display:flex;gap:56px;align-items:center;margin-top:48px;flex-wrap:wrap;justify-content:center}
+  .phone{
+    width:340px;background:#fff;border-radius:44px;padding:14px;
+    box-shadow:0 40px 90px rgba(0,0,0,.45);color:var(--ink);flex-shrink:0;
+  }
+  .screen{background:#FAFCFC;border-radius:34px;overflow:hidden}
+  .app-top{background:var(--lagoon);padding:22px 20px 18px;color:#fff}
+  .app-top .row1{display:flex;justify-content:space-between;align-items:center}
+  .app-top .brand{font-family:'Baloo Bhaijaan 2';font-weight:800;font-size:22px;display:flex;align-items:center;gap:8px}
+  .app-top .search{
+    margin-top:14px;background:rgba(255,255,255,.94);border-radius:100px;padding:10px 16px;
+    font-size:13.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px;
+  }
+  .cats{display:flex;gap:8px;padding:14px 16px 6px;overflow:hidden}
+  .cat{
+    font-size:12px;font-weight:600;padding:7px 13px;border-radius:100px;white-space:nowrap;
+    background:var(--foam);color:var(--lagoon-dark);
+  }
+  .cat.active{background:var(--coral);color:#fff}
+  .listings{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 20px}
+  .listing{background:#fff;border-radius:16px;overflow:hidden;border:1px solid rgba(10,53,64,.08)}
+  .listing .ph{height:86px;display:flex;align-items:center;justify-content:center;font-size:34px}
+  .listing .info{padding:10px 12px}
+  .listing .price{font-family:'Baloo Bhaijaan 2';font-weight:700;font-size:15px;color:var(--lagoon-dark)}
+  .listing .title{font-size:12px;font-weight:500;margin-top:1px}
+  .listing .loc{font-size:10.5px;color:var(--ink-soft);margin-top:3px;display:flex;align-items:center;gap:3px}
+  .verified{
+    display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;
+    background:var(--foam);color:var(--lagoon-dark);padding:2.5px 7px;border-radius:100px;margin-top:6px;
+  }
+  .tabbar{display:flex;justify-content:space-around;padding:12px 10px 16px;border-top:1px solid rgba(10,53,64,.08);background:#fff}
+  .tab{font-size:10px;font-weight:500;color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;gap:3px}
+  .tab.on{color:var(--lagoon-dark)}
+  .tab .sell{
+    width:44px;height:44px;border-radius:50%;background:var(--coral);color:#fff;display:flex;
+    align-items:center;justify-content:center;font-size:22px;margin-top:-26px;
+    box-shadow:0 8px 20px rgba(255,106,85,.5);font-weight:400;
+  }
+  .ui-notes{max-width:380px;display:flex;flex-direction:column;gap:20px}
+  .ui-note{display:flex;gap:14px;align-items:flex-start}
+  .ui-note .dot{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+  .ui-note b{display:block;font-family:'Baloo Bhaijaan 2';font-size:17px;margin-bottom:2px}
+  .ui-note p{font-size:14px;color:rgba(255,255,255,.62)}
+
+  /* ---------- APP ICON ---------- */
+  .icon-row{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap;align-items:flex-end}
+  .app-icon{border-radius:28%;box-shadow:0 16px 40px rgba(10,53,64,.22)}
+  .icon-caption{font-size:13px;color:var(--ink-soft);text-align:center;margin-top:12px}
+
+  footer{background:var(--deep);color:rgba(255,255,255,.6);padding:56px 0;text-align:center;font-size:14px}
+  footer .fbrand{font-family:'Baloo Bhaijaan 2';font-weight:800;font-size:26px;color:#fff;margin-bottom:6px}
+  footer .fbrand span{color:var(--coral)}
+
+  @media(max-width:860px){
+    .name-grid,.type-grid{grid-template-columns:1fr}
+    .logo-stage{grid-template-columns:1fr}
+    .swatches{grid-template-columns:repeat(3,1fr)}
+    .donts{grid-template-columns:repeat(2,1fr)}
+    .voice-grid{grid-template-columns:1fr}
+    section{padding:64px 0}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="wrap">
+    <!-- Primary mark: the Karro cart -->
+    <svg class="hero-mark" viewBox="0 0 132 132" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- pennant flag -->
+      <path d="M20 16 L44 22 L20 30 Z" fill="#FF6A55"/>
+      <!-- handle + basket outline -->
+      <path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38"
+            stroke="#14A09B" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <!-- basket fill -->
+      <path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#14A09B"/>
+      <!-- lagoon wave inside basket -->
+      <path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <!-- wheels -->
+      <circle cx="58" cy="115" r="9" fill="#0A3540"/>
+      <circle cx="58" cy="115" r="3.5" fill="#FFFFFF"/>
+      <circle cx="92" cy="115" r="9" fill="#0A3540"/>
+      <circle cx="92" cy="115" r="3.5" fill="#FFFFFF"/>
+    </svg>
+    <h1>kar<span style="color:#FF6A55">ro</span></h1>
+    <div class="ar" dir="rtl">كارو</div>
+    <p class="tag">El Gouna's own marketplace. <strong>Buy, sell, stay local.</strong></p>
+    <div class="hero-badges">
+      <span>🏝️ Residents only</span>
+      <span>✓ Verified neighbours</span>
+      <span>💬 Chat &amp; deal</span>
+    </div>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 70" preserveAspectRatio="none"><path d="M0,40 C240,70 480,10 720,35 C960,60 1200,15 1440,40 L1440,70 L0,70 Z" fill="#FFFFFF"/></svg>
+</div>
+
+<!-- ============ NAME ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">01 · The Name</div>
+    <h2>Karro — the original marketplace on wheels</h2>
+    <p class="lede">Before malls and apps, Egypt's marketplace was the karro — the vendor's cart that rolled through every street. It's commerce, nostalgia, and fun in one word, and it means the name and the logo tell the same story.</p>
+    <div class="name-grid">
+      <div class="name-card">
+        <div class="big">kar<span>ro</span></div>
+        <div class="ar-big" dir="rtl">كارو</div>
+        <p><b style="color:var(--deep)">Why it works:</b> Every Egyptian knows the karro; every foreign resident learns it in their first month. It's warm and instantly commercial without being corporate — exactly "simple and fun." Two syllables, works in both scripts, easy to say in any accent. And because the karro roams the neighbourhood, it naturally carries the hyper-local promise: the market comes to you.</p>
+      </div>
+      <div>
+        <div class="alt-label">Also on the shortlist</div>
+        <div class="alt-list">
+          <div class="alt"><b>Bazarna · بازارنا</b><small>"Our bazaar" — community + market, slightly longer and softer.</small></div>
+          <div class="alt"><b>Midan · ميدان</b><small>"The square" — civic and trusted, but lighter on fun.</small></div>
+          <div class="alt"><b>Yalla Souq</b><small>Energetic call to action; longer and harder to own as a mark.</small></div>
+          <div class="alt"><b>Okazyon · أوكازيون</b><small>Playful, but says "discounts" more than "marketplace."</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOGO ============ -->
+<section style="background:var(--sand)">
+  <div class="wrap">
+    <div class="eyebrow">02 · The Mark</div>
+    <h2>The cart, reinvented for Gouna</h2>
+    <p class="lede">A friendly, rounded cart — unmistakably "marketplace" at any size. Inside the basket runs the lagoon wave that connects the community; on the handle flies a coral pennant, the vendor's flag that says "open for business."</p>
+
+    <div class="logo-stage">
+      <div class="logo-cell lc-light">
+        <span class="cap">Primary · on light</span>
+        <svg width="132" height="132" viewBox="0 0 132 132" fill="none"><path d="M20 16 L44 22 L20 30 Z" fill="#FF6A55"/><path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#14A09B" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#14A09B"/><path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="58" cy="115" r="9" fill="#0A3540"/><circle cx="58" cy="115" r="3.5" fill="#fff"/><circle cx="92" cy="115" r="9" fill="#0A3540"/><circle cx="92" cy="115" r="3.5" fill="#fff"/></svg>
+        <div style="font-family:'Baloo Bhaijaan 2';font-weight:800;font-size:26px;margin-top:6px">kar<span style="color:var(--coral)">ro</span></div>
+      </div>
+      <div class="logo-cell lc-deep">
+        <span class="cap">Reversed · on deep water</span>
+        <svg width="132" height="132" viewBox="0 0 132 132" fill="none"><path d="M20 16 L44 22 L20 30 Z" fill="#FF6A55"/><path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#FFFFFF"/><path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#14A09B" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="58" cy="115" r="9" fill="#7ED8D3"/><circle cx="58" cy="115" r="3.5" fill="#0A3540"/><circle cx="92" cy="115" r="9" fill="#7ED8D3"/><circle cx="92" cy="115" r="3.5" fill="#0A3540"/></svg>
+        <div style="font-family:'Baloo Bhaijaan 2';font-weight:800;font-size:26px;margin-top:6px;color:#fff">kar<span style="color:#7ED8D3">ro</span></div>
+      </div>
+      <div class="logo-cell lc-coral">
+        <span class="cap">Fun · on coral</span>
+        <svg width="132" height="132" viewBox="0 0 132 132" fill="none"><path d="M20 16 L44 22 L20 30 Z" fill="#0A3540"/><path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#0A3540" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#0A3540"/><path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="58" cy="115" r="9" fill="#fff"/><circle cx="58" cy="115" r="3.5" fill="#0A3540"/><circle cx="92" cy="115" r="9" fill="#fff"/><circle cx="92" cy="115" r="3.5" fill="#0A3540"/></svg>
+        <div style="font-family:'Baloo Bhaijaan 2';font-weight:800;font-size:26px;margin-top:6px;color:#fff">karro</div>
+      </div>
+    </div>
+
+    <div class="logo-construction">
+      <svg width="160" height="160" viewBox="0 0 132 132" fill="none">
+        <rect x="4" y="4" width="124" height="124" rx="10" stroke="rgba(10,53,64,.25)" stroke-dasharray="4 4" fill="none"/>
+        <path d="M20 16 L44 22 L20 30 Z" fill="#FF6A55" opacity=".9"/>
+        <path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#14A09B" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".9"/>
+        <path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#14A09B" opacity=".9"/>
+        <path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <circle cx="58" cy="115" r="9" fill="#0A3540" opacity=".9"/><circle cx="92" cy="115" r="9" fill="#0A3540" opacity=".9"/>
+      </svg>
+      <p><b>Anatomy &amp; clear space.</b> Four elements: the coral pennant (always on the handle, always pointing right), the cart basket carrying the lagoon wave, and two wheels in Deep Water. Clear space equals one wheel diameter on all sides. Minimum size: 24&nbsp;px digital, 8&nbsp;mm print — below that, drop the wave and pennant and keep the cart silhouette.</p>
+    </div>
+
+    <div class="donts">
+      <div class="dont"><span class="x">Don't</span>Turn it into a generic e-commerce trolley — the pennant and wave are what make it Karro</div>
+      <div class="dont"><span class="x">Don't</span>Flip the mark — the cart always rolls to the right, toward the buyer</div>
+      <div class="dont"><span class="x">Don't</span>Fill the basket with products or icons — the wave is the only content</div>
+      <div class="dont"><span class="x">Don't</span>Recolor the pennant — coral is its only color on lagoon and deep backgrounds</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLORS ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">03 · Color</div>
+    <h2>Pulled from the map of Gouna</h2>
+    <p class="lede">The palette is the town itself: lagoon water, deep sea, coral, sand. Lagoon leads, Deep Water anchors trust, Coral carries the fun — reserved for actions and moments of delight.</p>
+
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#14A09B"></div><div class="meta"><b>Lagoon</b><code>#14A09B</code><small>Primary · brand, headers, links</small></div></div>
+      <div class="swatch"><div class="chip" style="background:#0A3540"></div><div class="meta"><b>Deep Water</b><code>#0A3540</code><small>Text, trust surfaces, dark UI</small></div></div>
+      <div class="swatch"><div class="chip" style="background:#FF6A55"></div><div class="meta"><b>Coral</b><code>#FF6A55</code><small>CTAs, sell button, pennant</small></div></div>
+      <div class="swatch"><div class="chip" style="background:#F3E9D7"></div><div class="meta"><b>Sun Sand</b><code>#F3E9D7</code><small>Warm section surfaces</small></div></div>
+      <div class="swatch"><div class="chip" style="background:#E9F6F5"></div><div class="meta"><b>Sea Foam</b><code>#E9F6F5</code><small>Cards, chips, light tints</small></div></div>
+      <div class="swatch"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid rgba(10,53,64,.08)"></div><div class="meta"><b>White</b><code>#FFFFFF</code><small>Default background</small></div></div>
+    </div>
+
+    <div class="ratio-bar">
+      <div style="background:#FFFFFF;color:var(--ink);flex:38">White 38%</div>
+      <div style="background:#14A09B;flex:25">Lagoon 25%</div>
+      <div style="background:#0A3540;flex:15">Deep 15%</div>
+      <div style="background:#E9F6F5;color:var(--ink);flex:12">Foam 12%</div>
+      <div style="background:#F3E9D7;color:var(--ink);flex:6">Sand 6%</div>
+      <div style="background:#FF6A55;flex:4">4%</div>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin-top:14px">Usage weighting. Coral at ~4% is deliberate: scarcity is what makes the sell button, the pennant, and prices pop. Deep Water on Sea Foam and White passes WCAG AA for all text sizes.</p>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section style="background:var(--foam)">
+  <div class="wrap">
+    <div class="eyebrow">04 · Typography</div>
+    <h2>Rounded, friendly, bilingual</h2>
+    <p class="lede">Both faces ship with full Arabic support on Google Fonts, so the brand speaks to every Gouna resident in their own script — with no fallback compromises.</p>
+
+    <div class="type-grid">
+      <div class="type-card t-display">
+        <div class="role">Display · Headlines &amp; Prices</div>
+        <div class="face">Baloo Bhaijaan 2</div>
+        <p style="font-size:14px;color:var(--ink-soft)">Weights 600–800 · Rounded terminals give the fun; the heavy weight gives the confidence.</p>
+        <div class="sample">
+          <div class="l1">Sold in 2 hours 🎉</div>
+          <div class="l2" style="font-family:'Baloo Bhaijaan 2';font-weight:600">EGP 4,500 · Kitesurf board 136cm</div>
+          <div class="ar-sample" dir="rtl">اشترى وبيع في جونا</div>
+        </div>
+      </div>
+      <div class="type-card t-body">
+        <div class="role">UI &amp; Body · Everything else</div>
+        <div class="face" style="font-family:'Rubik'">Rubik</div>
+        <p style="font-size:14px;color:var(--ink-soft)">Weights 300–600 · Geometric but soft-cornered; excellent legibility at listing-card sizes.</p>
+        <div class="sample">
+          <div class="l1" style="font-size:20px;font-weight:500">Message the seller to arrange pickup at Abu Tig Marina.</div>
+          <div class="l2">Body 15/1.6 · Labels 13/500 · Captions 12/400</div>
+          <div class="ar-sample" dir="rtl" style="font-family:'Rubik';font-weight:500;font-size:19px">راسل البائع لتحديد موعد الاستلام</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scale">
+      <div class="scale-row"><code>H1 · Baloo 800 · 40px</code><span class="display" style="font-size:40px;font-weight:800">Find it next door</span></div>
+      <div class="scale-row"><code>H2 · Baloo 700 · 28px</code><span class="display" style="font-size:28px;font-weight:700">Fresh in your marina</span></div>
+      <div class="scale-row"><code>Price · Baloo 700 · 20px</code><span class="display" style="font-size:20px;font-weight:700;color:var(--lagoon-dark)">EGP 12,000</span></div>
+      <div class="scale-row"><code>Body · Rubik 400 · 15px</code><span style="font-size:15px">Barely used, bought last season. Pickup from South Marina any evening.</span></div>
+      <div class="scale-row"><code>Label · Rubik 600 · 12px</code><span style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)">Verified Neighbour · Downtown</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VOICE ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">05 · Voice &amp; Tone</div>
+    <h2>Like a good neighbour, not a corporation</h2>
+    <p class="lede">Karro talks the way Gouna talks: relaxed, direct, a little playful — and dead serious about trust when it matters.</p>
+    <div class="voice-grid">
+      <div class="voice-card">
+        <h3>Neighbourly</h3>
+        <p>Short sentences, first names, zero jargon. We say "pickup" not "logistics coordination."</p>
+        <div class="say">Sara is 5 minutes away. Want to meet at the marina?</div>
+      </div>
+      <div class="voice-card">
+        <h3>Playful, not silly</h3>
+        <p>One light touch per screen — an emoji, a wink in a success message. Never in trust or safety copy.</p>
+        <div class="say">Sold! 🎉 Your karro rolls fast.</div>
+      </div>
+      <div class="voice-card">
+        <h3>Straight about trust</h3>
+        <p>Safety copy drops the playfulness completely. Plain, calm, specific.</p>
+        <div class="say">Only verified Gouna residents can see your listing and your contact details.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UI PREVIEW ============ -->
+<section class="ui-section">
+  <div class="wrap">
+    <div class="eyebrow">06 · The Brand in the App</div>
+    <h2 style="color:#fff">How it all comes together</h2>
+    <p class="lede">The home feed, showing the identity at work: lagoon header, coral sell button, verified badges, and listings that could only be from Gouna.</p>
+
+    <div class="ui-flex">
+      <div class="phone">
+        <div class="screen">
+          <div class="app-top">
+            <div class="row1">
+              <div class="brand">
+                <svg width="28" height="28" viewBox="0 0 132 132" fill="none"><path d="M20 16 L44 22 L20 30 Z" fill="#FF6A55"/><path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#FFFFFF"/><path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#14A09B" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="58" cy="115" r="9" fill="#0A3540"/><circle cx="92" cy="115" r="9" fill="#0A3540"/></svg>
+                karro
+              </div>
+              <div style="font-size:18px">🔔</div>
+            </div>
+            <div class="search">🔍 Search in El Gouna…</div>
+          </div>
+          <div class="cats">
+            <span class="cat active">All</span><span class="cat">🚲 Bikes</span><span class="cat">🏄 Water sports</span><span class="cat">🛋️ Home</span><span class="cat">👶 Kids</span>
+          </div>
+          <div class="listings">
+            <div class="listing"><div class="ph" style="background:#E9F6F5">🚲</div><div class="info"><div class="price">EGP 28,000</div><div class="title">Cannondale e-bike</div><div class="loc">📍 Abu Tig Marina</div><span class="verified">✓ Verified Neighbour</span></div></div>
+            <div class="listing"><div class="ph" style="background:#F3E9D7">🏄</div><div class="info"><div class="price">EGP 9,500</div><div class="title">Kitesurf board 136cm</div><div class="loc">📍 Mangroovy</div><span class="verified">✓ Verified Neighbour</span></div></div>
+            <div class="listing"><div class="ph" style="background:#F3E9D7">🪑</div><div class="info"><div class="price">EGP 15,000</div><div class="title">Rattan patio set</div><div class="loc">📍 South Marina</div><span class="verified">✓ Verified Neighbour</span></div></div>
+            <div class="listing"><div class="ph" style="background:#E9F6F5">📱</div><div class="info"><div class="price">EGP 32,000</div><div class="title">iPhone 15 Pro, boxed</div><div class="loc">📍 Downtown</div><span class="verified">✓ Verified Neighbour</span></div></div>
+          </div>
+          <div class="tabbar">
+            <div class="tab on">🏠<span>Home</span></div>
+            <div class="tab">💬<span>Chats</span></div>
+            <div class="tab"><span class="sell">+</span><span>Sell</span></div>
+            <div class="tab">❤️<span>Saved</span></div>
+            <div class="tab">👤<span>Me</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-notes">
+        <div class="ui-note"><div class="dot">🟢</div><div><b>Lagoon owns the frame</b><p>Header, links, prices — the brand color does the everyday work.</p></div></div>
+        <div class="ui-note"><div class="dot">🟠</div><div><b>Coral owns the action</b><p>One coral element per screen: here, the floating Sell button. Scarcity = attention.</p></div></div>
+        <div class="ui-note"><div class="dot">✓</div><div><b>Trust is always visible</b><p>The Verified Neighbour badge appears on every listing — the product's core promise, made into a design element.</p></div></div>
+        <div class="ui-note"><div class="dot">📍</div><div><b>Hyper-local by default</b><p>Location shows the neighbourhood, not the city. Everything is already in Gouna.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP ICON ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">07 · App Icon</div>
+    <h2>Instantly Karro at every size</h2>
+    <div class="icon-row">
+      <div>
+        <svg class="app-icon" width="140" height="140" viewBox="0 0 148 148"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#18B5AF"/><stop offset="1" stop-color="#0D7E7A"/></linearGradient></defs><rect width="148" height="148" fill="url(#g1)"/><g transform="translate(12,10)"><path d="M20 16 L44 22 L20 30 Z" fill="#FF6A55"/><path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#FFFFFF"/><path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#14A09B" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="58" cy="115" r="9" fill="#0A3540"/><circle cx="58" cy="115" r="3.5" fill="#fff"/><circle cx="92" cy="115" r="9" fill="#0A3540"/><circle cx="92" cy="115" r="3.5" fill="#fff"/></g></svg>
+        <div class="icon-caption">Primary · 140px</div>
+      </div>
+      <div>
+        <svg class="app-icon" width="88" height="88" viewBox="0 0 148 148"><rect width="148" height="148" fill="#0A3540"/><g transform="translate(12,10)"><path d="M20 16 L44 22 L20 30 Z" fill="#FF6A55"/><path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#14A09B" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#14A09B"/><path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="58" cy="115" r="9" fill="#7ED8D3"/><circle cx="92" cy="115" r="9" fill="#7ED8D3"/></g></svg>
+        <div class="icon-caption">Dark mode · 88px</div>
+      </div>
+      <div>
+        <svg class="app-icon" width="56" height="56" viewBox="0 0 148 148"><rect width="148" height="148" fill="#FF6A55"/><g transform="translate(12,10)"><path d="M20 16 L44 22 L20 30 Z" fill="#0A3540"/><path d="M20 14 V40 C20 44 23 47 27 48 L32 49.5 L41 88 C42.6 94.5 48.4 99 55 99 H92 C98.6 99 104.4 94.5 106 88 L114 56 C115.4 50.5 111.2 45 105.5 45 H38" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M38 45 H105.5 C111.2 45 115.4 50.5 114 56 L106 88 C104.4 94.5 98.6 99 92 99 H55 C48.4 99 42.6 94.5 41 88 L32 49.5 Z" fill="#FFFFFF"/><path d="M52 72 C60 64 67 80 75 72 C83 64 90 79 98 71.5" stroke="#FF6A55" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="58" cy="115" r="9" fill="#0A3540"/><circle cx="92" cy="115" r="9" fill="#0A3540"/></g></svg>
+        <div class="icon-caption">Alt · 56px</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">kar<span>ro</span></div>
+  <div>Brand Identity Guidelines · v2.0 · July 2026</div>
+  <div style="margin-top:6px;font-size:13px" dir="rtl">كارو — سوق جونا المتنقل</div>
+</footer>
+
+</body>
+</html>
