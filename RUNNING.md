@@ -56,7 +56,40 @@ rm -rf server/data
 cd app && npm run build      # static bundle → app/dist
 ```
 
-For a real deployment you'd serve `app/dist` behind the same origin as the API (or
-set `VITE_API_URL` to the API's URL) and run the backend behind a process manager.
-The default `JWT_SECRET` and file-based store are fine for demo/dev — swap the
-secret (env `JWT_SECRET`) and move to a managed database before going live.
+## Deploy as ONE service (live URL)
+
+The backend now serves the built front-end, so the whole app runs as a single
+process — one thing to host, one URL.
+
+```bash
+npm run build   # installs deps + builds the front-end into app/dist
+npm start       # node server/index.js — serves the app AND the API on $PORT
+```
+
+Locally that's `http://localhost:4000`. Any host that runs Node (or Docker) works.
+
+### Option 1 — Render (free, from your GitHub repo)
+
+1. Push this repo to GitHub (already done: `github.com/mohtadymaged/karro`).
+2. Go to <https://render.com> → **New → Web Service** → connect the `karro` repo.
+3. Settings:
+   - **Runtime:** Docker (a `Dockerfile` is included) — or Node with
+     **Build:** `npm run build`, **Start:** `npm start`
+   - **Environment variable:** `JWT_SECRET` = any long random string
+4. Create — Render gives you a public `https://karro-xxxx.onrender.com` URL.
+
+### Option 2 — Docker (any host: Railway, Fly.io, Cloud Run, a VPS)
+
+```bash
+docker build -t karro .
+docker run -p 4000:4000 -e JWT_SECRET=change-me karro
+# → http://localhost:4000
+```
+
+### Before real users
+
+- Set a strong `JWT_SECRET` (env var) — don't ship the dev default.
+- The database is a JSON file under `server/data/`. On hosts with an ephemeral
+  filesystem (Render free tier, Cloud Run) it resets on redeploy — fine for a
+  demo. For durable data, attach a persistent disk (mount it at `server/data`)
+  or move to a managed database.

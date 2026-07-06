@@ -1,0 +1,16 @@
+{
+  "name": "karro-fullstack",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Karro — El Gouna community marketplace (React front-end + Express API, single service)",
+  "scripts": {
+    "build": "npm --prefix server install && npm --prefix app install && npm --prefix app run build",
+    "start": "node server/index.js",
+    "dev:api": "npm --prefix server run dev",
+    "dev:web": "npm --prefix app run dev"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

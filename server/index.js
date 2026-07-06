@@ -6,8 +6,9 @@ import express from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { writeFileSync, existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getDb, save, nextId, MEDIA_DIR } from './db.js';
 import { CATS, LISTINGS, SELLERS, TESTIMONIALS, AUCTION_BASE } from '../app/src/data.js';
 
@@ -197,4 +198,17 @@ app.post('/api/auctions/:id/bid', auth, (req, res) => {
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
-app.listen(PORT, () => console.log(`Karro API → http://localhost:${PORT}`));
+// ── Serve the built front-end (single-service production deploy) ──
+// In dev this folder doesn't exist and Vite serves the UI instead.
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DIST = join(__dirname, '..', 'app', 'dist');
+if (existsSync(DIST)) {
+  app.use(express.static(DIST));
+  app.get('*', (req, res) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/media'))
+      return res.status(404).json({ error: 'Not found' });
+    res.sendFile(join(DIST, 'index.html'));
+  });
+}
+
+app.listen(PORT, () => console.log(`Karro → http://localhost:${PORT}`));
