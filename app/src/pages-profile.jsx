@@ -2,6 +2,7 @@ import React from 'react';
 import { LISTINGS, TESTIMONIALS, MY_LISTINGS } from './data.js';
 import { ItemImage } from './shared.jsx';
 import { ArrowLeft, Check, ChevronRight, X } from './icons.jsx';
+import { DeleteAccountSheet } from './trust-safety.jsx';
 /* Profile page — matches reference layout: header, avatar+Edit, ID, member badge, settings list, edit-profile subview */
 const AVATAR_PRESETS = ['🧑','👩','👨','🧑‍🌾','🦊','🐢','🐝','🌻','🌱','🍉','⚽','🎨'];
 
@@ -10,6 +11,7 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
   const [view, setView] = useState('main'); // main | edit | purchases | favorites
   const [pickOpen, setPickOpen] = useState(false);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [savedModal, setSavedModal] = useState(false);
   const [notif, setNotif] = useState(true);
   const [verified, setVerified] = useState(()=>{try{return localStorage.getItem('gt_verified')==='1';}catch(e){return false;}});
@@ -240,7 +242,17 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
         <div style={{background:'var(--card)',borderRadius:18,overflow:'hidden',border:'1px solid rgba(20,160,155,0.08)'}}>
           {settingsRows.map((r,i)=><Row key={r.label} r={r} last={i===settingsRows.length-1}/>)}
         </div>
+        {/* Account management (App Store 5.1.1 — in-app account deletion) */}
+        <button onClick={()=>setDeleteOpen(true)} style={{width:'100%',marginTop:14,display:'flex',alignItems:'center',gap:11,padding:'13px 16px',background:'rgba(232,81,60,0.05)',border:'1px solid rgba(232,81,60,0.15)',borderRadius:16,textAlign:'left'}}>
+          <div style={{width:30,height:30,borderRadius:'50%',background:'rgba(232,81,60,0.1)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:13}}>🗑️</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:13,fontWeight:700,color:'#E8513C'}}>Delete Account</div>
+            <div style={{fontSize:11,color:'var(--ink3)'}}>Permanently remove your account and data</div>
+          </div>
+          <ChevronRight size={14} style={{color:'rgba(232,81,60,0.5)'}}/>
+        </button>
       </div>
+      {deleteOpen&&<DeleteAccountSheet onClose={()=>setDeleteOpen(false)} onDeleted={onSignOut}/>}
       {/* Rules & Regulations sheet */}
       {rulesOpen&&(
         <div style={{position:'fixed',inset:0,zIndex:60,display:'flex',alignItems:'flex-end',justifyContent:'center',background:'rgba(10,53,64,0.6)',backdropFilter:'blur(4px)',animation:'fadeIn .25s ease-out'}} onClick={()=>setRulesOpen(false)}>

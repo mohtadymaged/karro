@@ -1,5 +1,15 @@
 // Karro API client. Talks to the backend under /api (proxied to :4000 in dev).
-const BASE = import.meta.env.VITE_API_URL || '/api';
+// For iOS: Use full backend URL from env or default to localhost (dev).
+// For web: Use relative /api (proxied by dev server or served from same origin in prod).
+function getBaseUrl() {
+  const isIOS = typeof window !== 'undefined' && window.location.protocol === 'capacitor://';
+  if (isIOS || import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+  }
+  return '/api';
+}
+
+const BASE = getBaseUrl();
 
 let token = '';
 try { token = localStorage.getItem('karro_token') || ''; } catch { /* ignore */ }
@@ -40,4 +50,10 @@ export const api = {
   sendMessage: (id, text) => req(`/listings/${id}/messages`, { method: 'POST', body: { text } }),
   sendOffer: (id, amount) => req(`/listings/${id}/offers`, { method: 'POST', body: { amount } }),
   bid: (id, amount) => req(`/auctions/${id}/bid`, { method: 'POST', body: { amount } }),
+  // Push notifications
+  registerDeviceToken: (token) => req('/users/me/device-token', { method: 'POST', body: { token } }),
+  // App Store compliance
+  reportListing: (id, reason) => req(`/listings/${id}/report`, { method: 'POST', body: { reason } }),
+  blockUser: (id) => req(`/users/${id}/block`, { method: 'POST' }),
+  deleteAccount: () => req('/me', { method: 'DELETE' }),
 };

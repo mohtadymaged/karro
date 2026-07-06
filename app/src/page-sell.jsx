@@ -2,6 +2,8 @@ import React from 'react';
 import { CATS } from './data.js';
 import { Shield, X } from './icons.jsx';
 import { api } from './api.js';
+import { isNative } from './native.js';
+import { takePhoto, pickPhoto } from './camera-util.js';
 /* Sell an item — bottom sheet flow (photos required + verification before listing) */
 const SellSheet = ({onClose, defaultCat='', onPosted}) => {
   const { useState, useRef } = React;
@@ -28,6 +30,44 @@ const SellSheet = ({onClose, defaultCat='', onPosted}) => {
     e.target.value='';
   };
   const removePhoto = (i) => setPhotos(p=>p.filter((_,n)=>n!==i));
+
+  const handleTakePhoto = async () => {
+    if (!isNative) {
+      camRef.current?.click();
+      return;
+    }
+    try {
+      setBusy(true);
+      const photo = await takePhoto();
+      if (photo && photos.length < MAX_PHOTOS) {
+        const dataUrl = `data:image/${photo.format};base64,${photo.base64}`;
+        setPhotos(p => [...p, dataUrl]);
+      }
+    } catch (e) {
+      setErr(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handlePickPhoto = async () => {
+    if (!isNative) {
+      fileRef.current?.click();
+      return;
+    }
+    try {
+      setBusy(true);
+      const photo = await pickPhoto();
+      if (photo && photos.length < MAX_PHOTOS) {
+        const dataUrl = `data:image/${photo.format};base64,${photo.base64}`;
+        setPhotos(p => [...p, dataUrl]);
+      }
+    } catch (e) {
+      setErr(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const conds  = ['New','Like new','Good','Fair'];
   const units  = [['','each'],['/pair','per pair'],['/set','per set']];
@@ -91,13 +131,13 @@ const SellSheet = ({onClose, defaultCat='', onPosted}) => {
                 )}
                 {photos.length<MAX_PHOTOS&&(
                   <div style={{display:'flex',gap:8,marginBottom:10}}>
-                    <button onClick={()=>camRef.current&&camRef.current.click()} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:5,padding:'16px 8px',borderRadius:14,background:'var(--card)',border:'1.5px dashed rgba(20,160,155,0.35)',color:'#14A09B'}}>
+                    <button onClick={handleTakePhoto} disabled={busy} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:5,padding:'16px 8px',borderRadius:14,background:'var(--card)',border:'1.5px dashed rgba(20,160,155,0.35)',color:'#14A09B',opacity:busy?0.6:1}}>
                       <span style={{fontSize:22}}>📷</span>
-                      <span style={{fontSize:11,fontWeight:700}}>Take a picture</span>
+                      <span style={{fontSize:11,fontWeight:700}}>{busy?'Loading…':'Take a picture'}</span>
                     </button>
-                    <button onClick={()=>fileRef.current&&fileRef.current.click()} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:5,padding:'16px 8px',borderRadius:14,background:'var(--card)',border:'1.5px dashed rgba(20,160,155,0.35)',color:'#14A09B'}}>
+                    <button onClick={handlePickPhoto} disabled={busy} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:5,padding:'16px 8px',borderRadius:14,background:'var(--card)',border:'1.5px dashed rgba(20,160,155,0.35)',color:'#14A09B',opacity:busy?0.6:1}}>
                       <span style={{fontSize:22}}>🖼️</span>
-                      <span style={{fontSize:11,fontWeight:700}}>Upload photos</span>
+                      <span style={{fontSize:11,fontWeight:700}}>{busy?'Loading…':'Upload photos'}</span>
                     </button>
                   </div>
                 )}

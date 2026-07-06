@@ -5,13 +5,27 @@ import { IOSDevice } from './ios-frame.jsx';
 import { LandingPage, SignInPage, RegisterPage } from './auth.jsx';
 import { MarketplaceApp } from './app-core.jsx';
 import { setToken } from './api.js';
+import { initPushNotifications } from './push-util.js';
+import { TermsGate, termsAccepted } from './trust-safety.jsx';
+import { isNative } from './native.js';
 
-const { useState } = React;
+const { useState, useEffect } = React;
 
 function GTribsRoot() {
   const [page, setPage] = useState('landing');
   const [username, setUsername] = useState('');
-  const enterApp = (u) => { if(u) setUsername(u); setPage('app'); };
+  const [terms, setTerms] = useState(termsAccepted);
+
+  const enterApp = (u) => {
+    if(u) setUsername(u);
+    setPage('app');
+    // Initialize push notifications when user enters the app
+    initPushNotifications().catch(console.error);
+  };
+
+  // First launch: terms must be accepted before anything else (Guideline 1.2)
+  if(!terms) return <TermsGate onAccept={()=>setTerms(true)}/>;
+
   return (
     <>
       {page==='landing'  && <LandingPage   onSignIn={()=>setPage('signin')}   onRegister={()=>setPage('register')}/>}
@@ -55,4 +69,20 @@ function StagedApp() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<StagedApp />);
+// Native (Capacitor): the phone IS the device — render full-screen, no fake frame.
+function NativeApp() {
+  return (
+    <div style={{
+      height: '100dvh',
+      width: '100%',
+      position: 'relative',
+      overflow: 'auto',
+      containerType: 'size',
+      background: 'linear-gradient(180deg,#0A3540 0%,#3A5A61 50%,#4A6B72 100%)',
+    }} className="sh">
+      <GTribsRoot />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(isNative ? <NativeApp /> : <StagedApp />);
