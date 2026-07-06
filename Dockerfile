@@ -16,8 +16,10 @@ RUN cd app && npm run build
 FROM node:22-alpine
 WORKDIR /src
 ENV NODE_ENV=production PORT=4000
-# server code + its node_modules, and the built front-end
+# server code + its node_modules, the built front-end, and the shared seed
+# data module the API imports (app/src/data.js)
 COPY --from=build /src/server ./server
 COPY --from=build /src/app/dist ./app/dist
+COPY --from=build /src/app/src ./app/src
 EXPOSE 4000
 CMD ["node", "server/index.js"]
