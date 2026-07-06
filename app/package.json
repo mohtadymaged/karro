@@ -3,13 +3,17 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Karro — El Gouna community marketplace (React + Vite)",
+  "description": "Karro \u2014 El Gouna community marketplace (React + Vite)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/camera": "^8.2.0",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/push-notifications": "^8.1.1",
+    "@capacitor/share": "^8.0.1",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
