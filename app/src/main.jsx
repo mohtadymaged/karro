@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { IOSDevice } from './ios-frame.jsx';
 import { LandingPage, SignInPage, RegisterPage } from './auth.jsx';
 import { MarketplaceApp } from './app-core.jsx';
+import { setToken } from './api.js';
 
 const { useState } = React;
 
@@ -16,7 +17,7 @@ function GTribsRoot() {
       {page==='landing'  && <LandingPage   onSignIn={()=>setPage('signin')}   onRegister={()=>setPage('register')}/>}
       {page==='signin'   && <SignInPage    onBack={()=>setPage('landing')}    onSuccess={enterApp} onRegister={()=>setPage('register')}/>}
       {page==='register' && <RegisterPage  onBack={()=>setPage('signin')}     onSuccess={enterApp}/>}
-      {page==='app'      && <MarketplaceApp onSignOut={()=>setPage('landing')} username={username}/>}
+      {page==='app'      && <MarketplaceApp onSignOut={()=>{setToken('');setPage('landing');}} username={username}/>}
     </>
   );
 }

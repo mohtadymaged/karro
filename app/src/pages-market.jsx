@@ -4,13 +4,15 @@ import { ItemImage } from './shared.jsx';
 import { ArrowLeft, Search, X, Bell } from './icons.jsx';
 import { SellSheet } from './page-sell.jsx';
 import { NotifSheet, NOTIFS } from './pages-home.jsx';
+import { api } from './api.js';
 /* Market + Category pages */
 const { useState, useEffect, useMemo } = React;
 
 const CategoryPage = ({cat, onBack, onItemSelect}) => {
   const [following, setFollowing] = useState(false);
   const [toast, setToast] = useState(false);
-  const items = LISTINGS.filter(l=>l.catId===cat.id);
+  const [items, setItems] = useState([]);
+  useEffect(()=>{ api.listings('cat='+cat.id).then(setItems).catch(()=>setItems([])); }, [cat.id]);
 
   const handleFollow = () => {
     const next = !following;
@@ -110,10 +112,13 @@ const BrowsePage = ({onCatSelect, onItemSelect, onSellersOpen}) => {
   const [search, setSearch]   = useState('');
   const [modal, setModal]     = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [items, setItems]     = useState([]);
+  const [reload, setReload]   = useState(0);
+  useEffect(()=>{ api.listings().then(setItems).catch(()=>setItems([])); }, [reload]);
 
   const filtered = (() => {
-    let list = selCat==='all' ? LISTINGS : LISTINGS.filter(l=>l.catId===selCat);
-    if(search) list = list.filter(l=>l.name.toLowerCase().includes(search.toLowerCase())||l.seller.toLowerCase().includes(search.toLowerCase()));
+    let list = selCat==='all' ? items : items.filter(l=>l.catId===selCat);
+    if(search) list = list.filter(l=>(l.name||'').toLowerCase().includes(search.toLowerCase())||(l.seller||'').toLowerCase().includes(search.toLowerCase()));
     return list;
   })();
 
@@ -146,7 +151,7 @@ const BrowsePage = ({onCatSelect, onItemSelect, onSellersOpen}) => {
           </button>
           {CATS.map(c=>{
             const act=selCat===c.id;
-            const count=LISTINGS.filter(l=>l.catId===c.id).length;
+            const count=items.filter(l=>l.catId===c.id).length;
             return (
               <button key={c.id} onClick={()=>onCatSelect(c)} style={{flexShrink:0,display:'flex',alignItems:'center',gap:5,padding:'6px 11px',borderRadius:100,fontSize:11,fontWeight:600,background:act?'linear-gradient(135deg,#FF6A55,#FF8A73)':'rgba(255,255,255,0.12)',color:act?'#0E4B54':'#FFFFFF',border:`1px solid ${act?'transparent':'rgba(255,255,255,0.22)'}`,whiteSpace:'nowrap',position:'relative'}}>
                 <span>{c.emoji}</span><span>{c.name}</span>
@@ -208,7 +213,7 @@ const BrowsePage = ({onCatSelect, onItemSelect, onSellersOpen}) => {
         )}
       </div>
 
-      {modal&&<SellSheet onClose={()=>setModal(false)} onPosted={()=>setSelCat('all')}/>}
+      {modal&&<SellSheet onClose={()=>setModal(false)} onPosted={()=>{setSelCat('all');setReload(r=>r+1);}}/>}
       {showNotifs&&<NotifSheet onClose={()=>setShowNotifs(false)}/>}
     </div>
   );

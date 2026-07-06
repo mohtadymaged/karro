@@ -1,11 +1,14 @@
 import React from 'react';
 import { CATS } from './data.js';
 import { Shield, X } from './icons.jsx';
+import { api } from './api.js';
 /* Sell an item — bottom sheet flow (photos required + verification before listing) */
 const SellSheet = ({onClose, defaultCat='', onPosted}) => {
   const { useState, useRef } = React;
   const [step,setStep] = useState(1);
   const [done,setDone] = useState(false);
+  const [busy,setBusy] = useState(false);
+  const [err,setErr]   = useState('');
   const [f,setFm] = useState({name:'',cat:defaultCat,price:'',unit:'',desc:'',cond:'Good',emoji:'📦'});
   const [mode,setMode] = useState('fixed'); // fixed | auction
   const [duration,setDuration] = useState('48');
@@ -29,10 +32,17 @@ const SellSheet = ({onClose, defaultCat='', onPosted}) => {
   const conds  = ['New','Like new','Good','Fair'];
   const units  = [['','each'],['/pair','per pair'],['/set','per set']];
 
-  const submit = () => {
-    // Goes to verification queue — not published until approved
-    setDone(true);
-    setTimeout(()=>{onPosted&&onPosted();onClose();},3200);
+  const submit = async () => {
+    // Persist to the marketplace, then show the "submitted for review" screen.
+    setErr(''); setBusy(true);
+    try {
+      await api.createListing({name:f.name, catId:f.cat, price:f.price, unit:f.unit, desc:f.desc, cond:f.cond, photos, mode});
+      setBusy(false); setDone(true);
+      setTimeout(()=>{onPosted&&onPosted();onClose();},2600);
+    } catch(e) {
+      setBusy(false);
+      setErr(e.message||'Could not submit — are you signed in?');
+    }
   };
 
   const step1Ok = f.name && f.cat && photos.length>0;
@@ -164,9 +174,10 @@ const SellSheet = ({onClose, defaultCat='', onPosted}) => {
                   <Shield size={15} strokeWidth={2} style={{color:'#FF6A55',flexShrink:0,marginTop:1}}/>
                   <p style={{fontSize:11.5,color:'var(--ink3)',lineHeight:1.55}}>To keep Karro scam-free, every listing is <strong>verified by the community team</strong> before it appears in the market. Approval usually takes under 2 hours.</p>
                 </div>
+                {err&&<p style={{fontSize:12,color:'#E8513C',marginBottom:10,textAlign:'center'}}>{err}</p>}
                 <div style={{display:'flex',gap:8}}>
                   <button onClick={()=>setStep(1)} className="btn-ghost-em" style={{padding:'15px 20px',borderRadius:100,fontSize:14}}>← Back</button>
-                  <button onClick={submit} disabled={!f.price} className="btn-em" style={{flex:1,padding:'15px',borderRadius:100,fontSize:14,opacity:!f.price?0.5:1,boxShadow:'0 6px 20px rgba(20,160,155,0.3)'}}>Submit for Review 🛡️</button>
+                  <button onClick={submit} disabled={!f.price||busy} className="btn-em" style={{flex:1,padding:'15px',borderRadius:100,fontSize:14,opacity:(!f.price||busy)?0.5:1,boxShadow:'0 6px 20px rgba(20,160,155,0.3)'}}>{busy?'Submitting…':'Submit for Review 🛡️'}</button>
                 </div>
               </>
             )}

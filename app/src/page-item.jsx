@@ -2,6 +2,7 @@ import React from 'react';
 import { SELLERS, CATS, LISTINGS } from './data.js';
 import { ItemImage, Stars, Confetti } from './shared.jsx';
 import { ArrowLeft, X } from './icons.jsx';
+import { api } from './api.js';
 /* Item detail page */
 const { useState, useEffect, useRef } = React;
 
@@ -24,8 +25,11 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
 
   const pics = (item.imgs&&item.imgs.length)?item.imgs:(item.img?[item.img]:[]);
   const fmt = `EGP ${Number(item.price.toFixed(2))}${item.unit}`;
-  const similar = LISTINGS.filter(l=>l.id!==item.id&&l.catId===item.catId)
-    .concat(LISTINGS.filter(l=>l.id!==item.id&&l.catId!==item.catId)).slice(0,5);
+  const [allItems,setAllItems] = useState([]);
+  const similar = allItems.filter(l=>l.id!==item.id&&l.catId===item.catId)
+    .concat(allItems.filter(l=>l.id!==item.id&&l.catId!==item.catId)).slice(0,5);
+  useEffect(()=>{ api.listings().then(setAllItems).catch(()=>setAllItems([])); },[]);
+  useEffect(()=>{ api.messages(item.id).then(ms=>{ if(ms&&ms.length) setMsgs(ms.map(m=>({me:true,text:m.text}))); }).catch(()=>{}); },[item.id]);
 
   const showToast = (t) => { setToast(t); setTimeout(()=>setToast(null),2200); };
 
@@ -35,6 +39,7 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
   const send = (text) => {
     const t = (text||draft).trim(); if(!t) return;
     setMsgs(m=>[...m,{me:true,text:t}]); setDraft(''); setTyping(true);
+    api.sendMessage(item.id,t).catch(()=>{});
     setTimeout(()=>{
       setTyping(false);
       const replies = [
@@ -51,6 +56,7 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
 
   const sendOffer = () => {
     if(!parseFloat(offerAmt)) return;
+    api.sendOffer(item.id, parseFloat(offerAmt)).catch(()=>{});
     setOfferDone(true);
     setTimeout(()=>{setOfferOpen(false);setOfferDone(false);setOfferAmt('');showToast('🤝 Offer sent to '+seller.name.split(' ')[0]+'!');},2400);
   };

@@ -40,7 +40,7 @@ const MarketplaceApp = ({onSignOut, initialTab='home', initialIsSeller=false, in
   const openItem = (it) => push({item: it});
   const openSeller = (sid) => { setSellerFocus(sid); switchTab('sellers'); };
 
-  const sellSheet = showSell && <SellSheet onClose={()=>setShowSell(false)}/>;
+  const sellSheet = showSell && <SellSheet onClose={()=>setShowSell(false)} onPosted={()=>switchTab('browse')}/>;
 
   // If an item is open, show ItemDetailPage over everything
   if(activeItem) return (

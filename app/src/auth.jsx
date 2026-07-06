@@ -2,6 +2,7 @@ import React from 'react';
 import { CSS, CATS, RESIDENT_TYPES } from './data.js';
 import { Logo, Particles, Confetti, DarkField } from './shared.jsx';
 import { Star, Mail, Lock, X, Check, ArrowLeft, User, Building, Home, Eye, EyeOff, Shield } from './icons.jsx';
+import { api, setToken } from './api.js';
 /* Landing + SignIn + Register */
 const { useState, useEffect, useMemo, useRef } = React;
 
@@ -149,8 +150,8 @@ const ForgotFlow = ({onClose}) => {
 };
 
 const SignInPage = ({onBack,onSuccess,onRegister}) => {
-  const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[show,setShow]=useState(false);const[busy,setBusy]=useState(false);const[forgot,setForgot]=useState(false);
-  const submit=()=>{setBusy(true);setTimeout(()=>{setBusy(false);onSuccess(deriveUsername(email));},1400);};
+  const[email,setEmail]=useState('');const[pass,setPass]=useState('');const[show,setShow]=useState(false);const[busy,setBusy]=useState(false);const[forgot,setForgot]=useState(false);const[err,setErr]=useState('');
+  const submit=async()=>{setErr('');setBusy(true);try{const{token,user}=await api.login({email,password:pass});setToken(token);onSuccess(user.username);}catch(e){setErr(e.message||'Sign in failed');setBusy(false);}};
   return(
     <div className="fs" style={{minHeight:'100%',background:AUTH_BG,color:'#FFFFFF',display:'flex',flexDirection:'column',animation:'slideIn .35s ease-out',position:'relative',overflow:'hidden'}}>
       <style>{CSS}</style>
@@ -172,6 +173,7 @@ const SignInPage = ({onBack,onSuccess,onRegister}) => {
           <DarkField icon={Lock} type={show?'text':'password'} value={pass} onChange={e=>setPass(e.target.value)} placeholder="Your password" right={<button onClick={()=>setShow(!show)} style={{background:'transparent',border:'none',color:'rgba(255,106,85,0.6)',display:'flex',cursor:'pointer'}}>{show?<EyeOff size={15}/>:<Eye size={15}/>}</button>}/>
           <div style={{textAlign:'right',marginBottom:26,marginTop:10}}><button onClick={()=>setForgot(true)} className="btn-ghost-gold" style={{borderRadius:8,padding:'6px 12px',fontSize:12,fontWeight:600,color:'#FF8A73',background:'transparent',border:'none',cursor:'pointer',whiteSpace:'nowrap'}}>Forgot password?</button></div>
         </div>
+        {err&&<p style={{fontSize:12,color:'#FF8A73',marginBottom:12,textAlign:'center'}}>{err}</p>}
         <button onClick={submit} disabled={busy} className="btn-gold" style={{padding:'16px',borderRadius:12,fontSize:15,fontWeight:600,marginBottom:18,opacity:busy?.7:1,boxShadow:'0 8px 32px rgba(255,106,85,0.4)',width:'100%',transition:'all .2s',cursor:busy?'not-allowed':'pointer'}}>{busy?'Signing in…':'Sign In →'}</button>
         <p style={{textAlign:'center',fontSize:14,color:'rgba(255,255,255,0.5)'}}>New here?{' '}<button onClick={onRegister} style={{background:'transparent',border:'none',color:'#7ED8D3',fontWeight:700,fontSize:14,cursor:'pointer',whiteSpace:'nowrap'}}>Join Karro</button></p>
        </div>
@@ -183,13 +185,13 @@ const SignInPage = ({onBack,onSuccess,onRegister}) => {
 
 /* REGISTER ══════════════════════════════════════════ */
 const RegisterPage = ({onBack,onSuccess,initialStep=1,initialDone=false,initialForm}) => {
-  const[step,setStep]=useState(initialStep);const[busy,setBusy]=useState(false);const[showP,setShowP]=useState(false);const[confetti,setConfetti]=useState(false);const[done,setDone]=useState(initialDone);
+  const[step,setStep]=useState(initialStep);const[busy,setBusy]=useState(false);const[showP,setShowP]=useState(false);const[confetti,setConfetti]=useState(false);const[done,setDone]=useState(initialDone);const[err,setErr]=useState('');
   const[form,setForm]=useState(initialForm||{name:'',email:'',username:'',password:'',unit:'',floor:'',residentType:'',interests:new Set(),idPhoto:null});
   const idRef=useRef(null);
   const set=(k,v)=>setForm(f=>({...f,[k]:v}));const tog=(id)=>setForm(f=>{const s=new Set(f.interests);s.has(id)?s.delete(id):s.add(id);return{...f,interests:s};});
   const back=()=>step>1?setStep(s=>s-1):onBack();
   const emailOk=/^\S+@\S+\.\S+$/.test(form.email);
-  const finish=()=>{setBusy(true);setTimeout(()=>{setBusy(false);try{localStorage.setItem('gt_verified',form.idPhoto?'1':'0');}catch(e){}setConfetti(true);setDone(true);setTimeout(()=>setConfetti(false),2000);},1600);};
+  const finish=async()=>{setErr('');setBusy(true);try{const{token,user}=await api.register({name:form.name,email:form.email,username:form.username,password:form.password,unit:form.unit,floor:form.floor,residentType:form.residentType,interests:[...form.interests]});setToken(token);try{localStorage.setItem('gt_verified',form.idPhoto?'1':'0');}catch(e){}setBusy(false);setConfetti(true);setDone(true);setTimeout(()=>setConfetti(false),2000);}catch(e){setErr(e.message||'Could not create account');setBusy(false);setStep(1);}};
   const next=()=>{if(step<4){setStep(s=>s+1);return;}finish();};
   const onIdFile=(e)=>{const file=e.target.files&&e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>set('idPhoto',ev.target.result);r.readAsDataURL(file);e.target.value='';};
   const canGo=step===1?(form.name.trim().length>=2&&emailOk&&form.username.length>=3&&form.password.length>=8):step===2?(form.unit&&form.residentType):step===3?form.interests.size>=3:true;
@@ -295,6 +297,7 @@ const RegisterPage = ({onBack,onSuccess,initialStep=1,initialDone=false,initialF
        </div>
       </div>
       <div style={{padding:'16px 22px 36px',background:'rgba(10,53,64,0.78)',backdropFilter:'blur(14px)',WebkitBackdropFilter:'blur(14px)',borderTop:'1px solid rgba(126,216,211,0.18)',maxWidth:480,width:'100%',margin:'0 auto',position:'relative',zIndex:1}}>
+        {err&&<p style={{fontSize:12,color:'#FF8A73',marginBottom:10,textAlign:'center'}}>{err}</p>}
         <button onClick={next} disabled={!canGo||busy} className={canGo?'btn-gold':''} style={{width:'100%',padding:'16px',borderRadius:12,fontSize:15,fontWeight:600,background:canGo?undefined:'rgba(10,53,64,0.7)',color:canGo?undefined:'rgba(255,138,115,0.75)',border:canGo?'none':'1px solid rgba(255,106,85,0.35)',boxShadow:canGo?'0 8px 32px rgba(255,106,85,0.35)':undefined,transition:'all .2s',cursor:canGo?'pointer':'not-allowed',opacity:busy?.7:1}}>
           {busy?'Setting up…':step<4?'Continue →':form.idPhoto?'🎉 Join Karro':'Skip & Join Unverified'}
         </button>
