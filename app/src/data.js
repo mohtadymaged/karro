@@ -30,6 +30,13 @@ const CSS = `
 @keyframes cpop     {0%{transform:translate(0,0) scale(0) rotate(0deg);opacity:1}25%{opacity:1}100%{transform:translate(var(--cx),var(--cy)) scale(1) rotate(var(--cr));opacity:0}}
 @keyframes blink    {0%,100%{opacity:1}50%{opacity:0}}
 @keyframes pageIn   {from{opacity:0;transform:translateY(14px) scale(0.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes marqueeR {0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.marquee-track{display:flex;gap:8px;width:max-content;animation:marqueeR 28s linear infinite;}
+.marquee-track.rev{animation-direction:reverse;}
+.marquee-track:hover{animation-play-state:paused;}
+.glass{background:rgba(255,255,255,0.42) !important;backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,0.55);box-shadow:0 8px 24px rgba(10,53,64,0.10), inset 0 1px 0 rgba(255,255,255,0.6);}
+.glass-dark{background:rgba(10,53,64,0.82) !important;backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 24px rgba(10,53,64,0.25), inset 0 1px 0 rgba(255,255,255,0.15);}
+.fs[data-theme="dark"] .glass{background:rgba(14,75,84,0.45) !important;border-color:rgba(255,255,255,0.14);}
 @keyframes tabPop   {0%{transform:scale(0.7)}55%{transform:scale(1.28)}100%{transform:scale(1)}}
 @keyframes popIn    {0%{opacity:0;transform:scaleX(0)}100%{opacity:1;transform:scaleX(1)}}
 @keyframes wave     {0%,60%,100%{transform:rotate(0deg)}10%,30%{transform:rotate(18deg)}20%,40%{transform:rotate(-9deg)}}
@@ -83,7 +90,7 @@ const CATS = [
   {id:'appliances', name:'Appliances',   emoji:'⚡',c:'#0D7E7A',bg:'#BFE7E4',members:22,img:'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop&auto=format&q=80'},
   {id:'vehicles',   name:'Vehicles',     emoji:'🚗',c:'#0D7E7A',bg:'#BFE7E4',members:12,img:'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&h=400&fit=crop&auto=format&q=80'},
   {id:'games',      name:'Games & Toys', emoji:'🎮',c:'#0D7E7A',bg:'#BFE7E4',members:28,img:'https://images.unsplash.com/photo-1580327344181-c1163234e5a0?w=400&h=400&fit=crop&auto=format&q=80'},
-  {id:'home',       name:'Home & Garden',emoji:'🛋️',c:'#0D7E7A',bg:'#BFE7E4',members:35,img:'https://images.unsplash.com/photo-1567538096631-e0c55bd6374c?w=400&h=400&fit=crop&auto=format&q=80'},
+  {id:'home',       name:'Home & Garden',emoji:'🛋️',c:'#0D7E7A',bg:'#BFE7E4',members:35,img:'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop&auto=format&q=80'},
   {id:'sports',     name:'Sports',       emoji:'⚽',c:'#0D7E7A',bg:'#BFE7E4',members:18},
   {id:'books',      name:'Books & Media',emoji:'📚',c:'#0D7E7A',bg:'#BFE7E4',members:27},
   {id:'beauty',     name:'Beauty & Care',emoji:'💄',c:'#E8513C',bg:'#F3E9D7',members:21},

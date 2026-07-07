@@ -52,6 +52,8 @@ export const api = {
   bid: (id, amount) => req(`/auctions/${id}/bid`, { method: 'POST', body: { amount } }),
   // Push notifications
   registerDeviceToken: (token) => req('/users/me/device-token', { method: 'POST', body: { token } }),
+  // Advertising
+  applyAd: (b) => req('/ads/apply', { method: 'POST', body: b }),
   // App Store compliance
   reportListing: (id, reason) => req(`/listings/${id}/report`, { method: 'POST', body: { reason } }),
   blockUser: (id) => req(`/users/${id}/block`, { method: 'POST' }),

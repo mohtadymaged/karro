@@ -125,7 +125,7 @@ const AuctionsPage = () => {
   return (
     <div style={{flex:1,overflowY:'auto',paddingBottom:80}} className="sh">
       {/* Header */}
-      <div style={{background:'linear-gradient(180deg,#0D7E7A 0%,#14A09B 100%)',padding:'58px 16px 16px',position:'sticky',top:0,zIndex:10}}>
+      <div style={{background:'linear-gradient(180deg,#0D7E7A 0%,#14A09B 100%)',padding:'74px 16px 16px',position:'sticky',top:0,zIndex:10}}>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
           <div>
             <div style={{display:'flex',alignItems:'center',gap:8}}>
@@ -133,7 +133,7 @@ const AuctionsPage = () => {
               <span style={{fontSize:10,fontWeight:700,letterSpacing:'0.14em',color:'#7ED8D3'}}>LIVE BIDDING</span>
             </div>
             <h1 style={{fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize:26,fontWeight:900,color:'#FFFFFF',lineHeight:1.1,marginTop:2}}>
-              ⚡ <span style={{color:'#FFFFFF'}}>Auctions</span>
+              <span style={{position:'relative',top:9}}>⚡</span> <span style={{color:'#FFFFFF',position:'relative',top:9,fontSize:30}}>Auctions</span>
             </h1>
           </div>
           <button onClick={()=>setShowNotifs(true)} aria-label="Notifications" style={{position:'relative',width:38,height:38,borderRadius:12,background:'rgba(255,255,255,0.14)',border:'1px solid rgba(255,255,255,0.22)',color:'#FFFFFF',display:'flex',alignItems:'center',justifyContent:'center'}}>

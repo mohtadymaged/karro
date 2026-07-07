@@ -397,6 +397,31 @@ app.delete('/api/me', auth, (req, res) => {
   res.json({ ok: true, message: 'Your account has been permanently deleted.' });
 });
 
+// ── Advertising applications ──────────────────────────────
+app.post('/api/ads/apply', (req, res) => {
+  const { name, contact, message, slot } = req.body || {};
+  if (!name || !String(name).trim() || !contact || !String(contact).trim())
+    return res.status(400).json({ error: 'Business name and contact are required' });
+  const db = getDb();
+  if (!db.adApplications) db.adApplications = [];
+  db.adApplications.push({
+    id: nextId('ad'),
+    name: String(name).trim().slice(0, 120),
+    contact: String(contact).trim().slice(0, 120),
+    message: String(message || '').trim().slice(0, 1000),
+    slot: String(slot || '').slice(0, 40),
+    status: 'new',
+    createdAt: Date.now(),
+  });
+  save();
+  res.json({ ok: true });
+});
+app.get('/api/moderation/ad-applications', (req, res) => {
+  if (req.headers['x-admin-key'] !== (process.env.ADMIN_KEY || 'karro-admin-dev'))
+    return res.status(403).json({ error: 'Forbidden' });
+  res.json(getDb().adApplications || []);
+});
+
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 // ── Legal pages (App Store requires a public privacy-policy URL) ──
