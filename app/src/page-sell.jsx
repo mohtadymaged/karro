@@ -76,7 +76,7 @@ const SellSheet = ({onClose, defaultCat='', onPosted}) => {
     // Persist to the marketplace, then show the "submitted for review" screen.
     setErr(''); setBusy(true);
     try {
-      await api.createListing({name:f.name, catId:f.cat, price:f.price, unit:f.unit, desc:f.desc, cond:f.cond, photos, mode});
+      await api.createListing({name:f.name, catId:f.cat, price:f.price, unit:f.unit, desc:f.desc, cond:f.cond, photos, mode, duration});
       setBusy(false); setDone(true);
       setTimeout(()=>{onPosted&&onPosted();onClose();},2600);
     } catch(e) {

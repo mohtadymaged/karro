@@ -1,16 +1,13 @@
 import React from 'react';
-import { CATS, AUCTION_BASE, SELLERS, MY_LISTINGS } from './data.js';
+import { CATS, MY_LISTINGS } from './data.js';
+import { api } from './api.js';
 import { ItemImage, Particles, Counter } from './shared.jsx';
 import { X, Bell, Check, ChevronRight } from './icons.jsx';
 /* Home page */
 const { useState, useEffect, useMemo } = React;
 
-const NOTIFS = [
-  {id:1, icon:'💬', title:'Sara (4B) messaged you', body:'“Is the coffee table still available?”', time:'2m ago', unread:true},
-  {id:2, icon:'⚡', title:'Auction ending soon', body:'iPhone 13 — highest bid EGP 310. Ends in 18 min.', time:'14m ago', unread:true},
-  {id:3, icon:'🛋️', title:'New in Home & Garden', body:'3 new listings from your neighbors today.', time:'1h ago', unread:true},
-  {id:4, icon:'⭐', title:'You got a 5-star rating', body:'Omar (2A) rated your handover “quick & friendly”.', time:'Yesterday', unread:false},
-];
+// Demo notifications removed — real notifications arrive with push (Phase 4b).
+const NOTIFS = [];
 
 const NotifSheet = ({onClose}) => (
   <div style={{position:'fixed',inset:0,zIndex:50,display:'flex',alignItems:'flex-end',justifyContent:'center',background:'rgba(10,53,64,0.6)',backdropFilter:'blur(4px)',animation:'fadeIn .25s ease-out'}} onClick={onClose}>
@@ -61,6 +58,9 @@ const CatTile = ({c, i, onSelect}) => {
 const HomePage = ({isSeller, onNav, onCatSelect, onSellerOpen, username=''}) => {
   const [showNotifs, setShowNotifs] = useState(false);
   const [sy, setSy] = useState(0);
+  const [auctions,setAuctions] = useState([]);
+  const [sellers,setSellers] = useState([]);
+  useEffect(()=>{ api.auctions().then(a=>setAuctions(a.filter(x=>x.status==='live'))).catch(()=>{}); api.sellers().then(setSellers).catch(()=>{}); },[]);
   const homeVerified = (()=>{try{return localStorage.getItem('gt_verified')==='1';}catch(e){return false;}})();
   const unread = NOTIFS.filter(n=>n.unread).length;
   const h = new Date().getHours();
@@ -134,7 +134,8 @@ const HomePage = ({isSeller, onNav, onCatSelect, onSellerOpen, username=''}) => 
           <button onClick={()=>onNav('auctions')} style={{background:'transparent',border:'none',fontSize:12,fontWeight:600,color:'#FF6A55',display:'flex',alignItems:'center',gap:2}}>All <ChevronRight size={13}/></button>
         </div>
         <div style={{overflowX:'auto',display:'flex',gap:10,paddingBottom:4}} className="sh">
-          {AUCTION_BASE.filter(a=>a.status==='live').slice(0,3).map((a,i)=>(
+          {auctions.length===0&&<div style={{flexShrink:0,flex:1,padding:'18px 16px',background:'var(--card2)',borderRadius:16,fontSize:12.5,color:'var(--ink2)'}}>No live auctions yet — start one from the Sell button ⚡</div>}
+          {auctions.slice(0,3).map((a,i)=>(
             <button key={a.id} onClick={()=>onNav('auctions')} className={`cp s${i+1}`} style={{flexShrink:0,width:150,background:'linear-gradient(145deg,#0E4B54,#0E4B54)',borderRadius:18,overflow:'hidden',border:'none',textAlign:'left',animation:'fadeUp .45s ease-out both'}}>
               <div style={{height:72,background:a.bg,position:'relative',overflow:'hidden'}}>
                 <ItemImage src={a.img} emoji={a.emoji} bg={a.bg} fontSize={34} style={{position:'absolute',inset:0}}/>{a.hot&&<div style={{position:'absolute',top:4,right:4,width:7,height:7,borderRadius:'50%',background:'#E8513C',animation:'livePulse 1s ease-in-out infinite',zIndex:2}}/>}
@@ -155,11 +156,12 @@ const HomePage = ({isSeller, onNav, onCatSelect, onSellerOpen, username=''}) => 
           <button onClick={()=>onSellerOpen&&onSellerOpen(null)} style={{background:'transparent',border:'none',fontSize:12,fontWeight:600,color:'#14A09B',display:'flex',alignItems:'center',gap:2}}>All <ChevronRight size={13}/></button>
         </div>
         <div style={{overflowX:'auto',display:'flex',gap:10,paddingBottom:4}} className="sh">
-          {SELLERS.map((s,i)=>(
+          {sellers.length===0&&<div style={{flexShrink:0,flex:1,padding:'18px 16px',background:'var(--card2)',borderRadius:16,fontSize:12.5,color:'var(--ink2)'}}>No stalls open yet — yours could be the first 🌟</div>}
+          {sellers.map((s,i)=>(
             <button key={s.id} onClick={()=>onSellerOpen&&onSellerOpen(s.id)} className={`cp s${Math.min(i+1,9)}`} style={{flexShrink:0,width:118,background:'var(--card)',border:'1px solid rgba(255,106,85,0.12)',borderRadius:16,padding:'13px 10px',textAlign:'center',animation:'fadeUp .45s ease-out both'}}>
               <div style={{width:42,height:42,borderRadius:14,background:'linear-gradient(135deg,#BFE7E4,#7ED8D3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:21,margin:'0 auto 7px'}}>{s.avatar}</div>
               <div style={{fontSize:12,fontWeight:700,color:'var(--ink)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{s.name}</div>
-              <div style={{fontSize:10,color:'#FF6A55',fontWeight:700,marginTop:2}}>{s.rating} ★ <span style={{color:'var(--ink3)',fontWeight:500}}>· {s.sales} sales</span></div>
+              <div style={{fontSize:10,color:'#FF6A55',fontWeight:700,marginTop:2}}>{s.badge} <span style={{color:'var(--ink3)',fontWeight:500}}>· {s.live} live</span></div>
             </button>
           ))}
         </div>

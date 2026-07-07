@@ -11,7 +11,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getDb, save, nextId, MEDIA_DIR } from './db.js';
 import { TERMS_HTML, PRIVACY_HTML } from './legal.js';
-import { CATS, LISTINGS, SELLERS, TESTIMONIALS, AUCTION_BASE } from '../app/src/data.js';
+import { CATS } from '../app/src/data.js';
 
 const SECRET = process.env.JWT_SECRET || 'karro-dev-secret-change-me';
 const PORT = process.env.PORT || 4000;
@@ -21,12 +21,16 @@ app.use(cors());
 app.use(express.json({ limit: '25mb' })); // room for base64 listing photos
 app.use('/media', express.static(MEDIA_DIR));
 
-// ── Seed the catalogue once ────────────────────────────────
+// ── Migration: purge demo catalogue ────────────────────────
+// Earlier builds seeded fake listings (recognisable: no sellerId).
+// The marketplace now carries real member content only.
 const boot = getDb();
-if (!boot.seeded) {
-  boot.listings = LISTINGS.map((l) => ({ ...l, sellerId: null, createdAt: 0 }));
+const before = boot.listings.length;
+boot.listings = boot.listings.filter((l) => l.sellerId);
+if (boot.listings.length !== before || !boot.seeded) {
   boot.seeded = true;
   save();
+  if (before) console.log(`Purged ${before - boot.listings.length} demo listings`);
 }
 
 // ── Auth helpers ───────────────────────────────────────────
@@ -92,15 +96,72 @@ app.get('/api/me', auth, (req, res) => {
   res.json({ user: publicUser(db.users.find((u) => u.id === req.uid)) });
 });
 
-// ── Seed catalogue (static) ────────────────────────────────
+// ── Catalogue ──────────────────────────────────────────────
 app.get('/api/categories', (_req, res) => res.json(CATS));
-app.get('/api/sellers', (_req, res) => res.json(SELLERS));
-app.get('/api/sellers/:id', (req, res) => {
-  const s = SELLERS.find((x) => x.id === req.params.id);
-  return s ? res.json(s) : res.status(404).json({ error: 'Seller not found' });
+
+// Sellers are real members with at least one live listing.
+function sellerView(u, db) {
+  const listings = db.listings.filter((l) => l.sellerId === u.id && !l.flagged);
+  return {
+    id: u.id,
+    name: u.name,
+    avatar: '🧑',
+    unit: u.unit || '',
+    rating: null, // no review system yet — never fake it
+    sales: 0,
+    live: listings.length,
+    since: new Date(u.createdAt || Date.now()).getFullYear(),
+    badge: u.verified ? 'Verified' : 'New',
+    bio: '',
+  };
+}
+app.get('/api/sellers', (_req, res) => {
+  const db = getDb();
+  const sellerIds = new Set(db.listings.filter((l) => l.sellerId && !l.flagged).map((l) => l.sellerId));
+  res.json(db.users.filter((u) => sellerIds.has(u.id)).map((u) => sellerView(u, db)));
 });
-app.get('/api/sellers/:id/reviews', (req, res) => res.json(TESTIMONIALS[req.params.id] || []));
-app.get('/api/auctions', (_req, res) => res.json(AUCTION_BASE));
+app.get('/api/sellers/:id', (req, res) => {
+  const db = getDb();
+  const u = db.users.find((x) => x.id === req.params.id);
+  return u ? res.json(sellerView(u, db)) : res.status(404).json({ error: 'Seller not found' });
+});
+app.get('/api/sellers/:id/reviews', (_req, res) => res.json([]));
+
+// Auctions are real listings posted in auction mode.
+const AUCTION_HOURS = 48;
+app.get('/api/auctions', (_req, res) => {
+  const db = getDb();
+  const now = Date.now();
+  const out = db.listings
+    .filter((l) => l.status === 'auction' && !l.flagged)
+    .map((l) => {
+      const bids = db.bids.filter((b) => b.auctionId === l.id);
+      const top = bids.reduce((m, b) => Math.max(m, b.amount || 0), 0);
+      const endsAt = (l.createdAt || now) + (l.durationH || AUCTION_HOURS) * 3600e3;
+      const leftMin = Math.max(0, Math.round((endsAt - now) / 60e3));
+      return {
+        id: l.id,
+        status: leftMin > 0 ? 'live' : 'review',
+        emoji: l.emoji || '📦',
+        img: (l.imgs && l.imgs[0]) || l.img || null,
+        bg: l.bg || '#E9F6F5',
+        title: l.name,
+        sub: l.cond || '',
+        cat: l.catId,
+        seller: l.seller,
+        sRating: null,
+        sSales: 0,
+        startBid: l.price,
+        currentBid: top,
+        reserve: 0,
+        bids: bids.length,
+        endH: Math.floor(leftMin / 60),
+        endM: leftMin % 60,
+        desc: l.desc || '',
+      };
+    });
+  res.json(out);
+});
 
 // Reads the JWT if one is sent, without requiring it — lets public
 // endpoints personalise results (e.g. hide blocked sellers' listings).
@@ -159,13 +220,14 @@ function saveDataUrl(dataUrl) {
 app.post('/api/listings', auth, (req, res) => {
   const db = getDb();
   const user = db.users.find((u) => u.id === req.uid);
-  const { name, catId, price, unit, desc, cond, photos, mode } = req.body || {};
+  const { name, catId, price, unit, desc, cond, photos, mode, duration } = req.body || {};
   if (!name || !catId || !price)
     return res.status(400).json({ error: 'Name, category and price are required' });
   const imgs = (photos || []).map(saveDataUrl).filter(Boolean);
   const cat = CATS.find((c) => c.id === catId);
   const listing = {
     id: nextId('L'),
+    durationH: mode === 'auction' ? Math.min(72, Math.max(24, Number(duration) || 48)) : undefined,
     catId,
     name,
     price: Number(price),

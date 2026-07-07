@@ -39,12 +39,7 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
     setSavedModal(true);
   };
 
-  const PURCHASES = [
-    {id:'p1',emoji:'☕',img:'https://images.unsplash.com/photo-1572119865084-43c285814d63?w=600&h=600&fit=crop&auto=format&q=80',bg:'#BFE7E4',name:'Espresso Machine',seller:'David L.',unit:'7C',date:'Jun 28',price:220},
-    {id:'p2',emoji:'🪴',img:'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=600&h=600&fit=crop&auto=format&q=80',bg:'#BFE7E4',name:'Monstera Deliciosa',seller:'Sarah K.',unit:'12A',date:'Jun 19',price:35},
-    {id:'p3',emoji:'📚',img:'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=600&h=600&fit=crop&auto=format&q=80',bg:'#E0D0B8',name:'Atomic Habits',seller:'Emma T.',unit:'1A',date:'Jun 04',price:12},
-    {id:'p4',emoji:'🧥',bg:'#DCC4E8',name:"Vintage Levi's Jacket",seller:'James W.',unit:'9D',date:'May 22',price:65},
-  ];
+  const PURCHASES = []; // real purchase history arrives with the offers/checkout flow
   const favorites = LISTINGS.slice(0,4);
 
   const Avatar = ({size=104, radius=null, fontSize=44}) => (
@@ -232,7 +227,7 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
           <button onClick={()=>setView('edit')} style={{position:'absolute',bottom:-8,left:'50%',transform:'translateX(-50%)',display:'flex',alignItems:'center',gap:4,background:'var(--card)',border:'1px solid rgba(20,160,155,0.2)',borderRadius:100,padding:'5px 12px',fontSize:11,fontWeight:700,color:'#14A09B',boxShadow:'0 3px 10px rgba(0,0,0,0.12)'}}>✏️ Edit</button>
         </div>
         <div style={{fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize:23,fontWeight:800,color:'var(--ink)',marginTop:18,animation:'fadeUp .5s .12s ease-out both'}}>{name}</div>
-        <div style={{fontSize:12,color:'var(--ink3)',marginTop:4,animation:'fadeUp .5s .18s ease-out both'}}>ID No : 2205 4871 · Unit 5C</div>
+        <div style={{fontSize:12,color:'var(--ink3)',marginTop:4,animation:'fadeUp .5s .18s ease-out both'}}>El Gouna resident</div>
         <div style={{display:'inline-flex',alignItems:'center',gap:6,marginTop:10,background:verified?'linear-gradient(135deg,#FF6A55,#FF8A73)':'rgba(20,160,155,0.1)',border:verified?'none':'1px solid rgba(20,160,155,0.2)',borderRadius:100,padding:'7px 16px',fontSize:11,fontWeight:800,color:verified?'#0E4B54':'var(--ink3)',whiteSpace:'nowrap',boxShadow:verified?'0 3px 12px rgba(255,106,85,0.35)':'none'}}>{verified?<Check size={11} strokeWidth={3}/>:'⏳'}{verified?'Verified Member':'Unverified — tap ID Verification below'}</div>
         <input ref={idRef} type="file" accept="image/*" onChange={onIdFile} style={{display:'none'}}/>
       </div>

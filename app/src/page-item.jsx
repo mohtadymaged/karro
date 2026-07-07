@@ -10,7 +10,7 @@ const { useState, useEffect, useRef } = React;
 
 const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
   const sellerRec = SELLERS.find(s=>s.name===item.seller);
-  const seller = sellerRec || {name:item.seller,avatar:item.seller==='You'?'🙋':'👤',unit:item.unit_,rating:4.8,sales:12,since:'2025',badge:'Verified',bio:''};
+  const seller = sellerRec || {name:item.seller,avatar:item.seller==='You'?'🙋':'👤',unit:item.unit_,rating:null,sales:0,since:'',badge:'New',bio:''};
   const cat = CATS.find(c=>c.id===item.catId);
   const [msgs,setMsgs]   = useState([]);
   const [draft,setDraft] = useState('');
@@ -43,20 +43,9 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
 
   const send = (text) => {
     const t = (text||draft).trim(); if(!t) return;
-    setMsgs(m=>[...m,{me:true,text:t}]); setDraft(''); setTyping(true);
+    setMsgs(m=>[...m,{me:true,text:t}]); setDraft('');
     api.sendMessage(item.id,t).catch(()=>{});
-    setTimeout(()=>{
-      setTyping(false);
-      const replies = [
-        `Hi! Yes, the ${item.name} is still available. 😊`,
-        `You can pick it up at Unit ${seller.unit} — I'm around most evenings.`,
-        `Sure, happy to answer anything else!`,
-      ];
-      setMsgs(m=>{
-        const idx = Math.min(m.filter(x=>!x.me).length, replies.length-1);
-        return [...m,{me:false,text:replies[idx]}];
-      });
-    },1600);
+    // Fake auto-replies removed — the seller answers when they see it.
   };
 
   const sendOffer = () => {
@@ -175,14 +164,14 @@ const ItemDetailPage = ({item, onBack, onItemSelect, onSellerOpen}) => {
                   <span style={{background:'rgba(255,138,115,0.15)',color:'#FF8A73',fontSize:9,fontWeight:800,letterSpacing:'0.06em',padding:'3px 8px',borderRadius:100}}>{seller.badge}</span>
                 </div>
                 <div style={{display:'flex',alignItems:'center',gap:5,marginTop:3}}>
-                  <Stars rating={seller.rating} size={11}/>
-                  <span style={{fontSize:11,color:'rgba(255,255,255,0.55)'}}>{seller.rating} · {seller.sales} sales</span>
+                  {seller.rating?<Stars rating={seller.rating} size={11}/>:null}
+                  <span style={{fontSize:11,color:'rgba(255,255,255,0.55)'}}>{seller.rating?seller.rating+' · ':''}{seller.sales} sales</span>
                 </div>
               </div>
               {sellerRec&&<span style={{fontSize:11,fontWeight:700,color:'#FF8A73',flexShrink:0}}>Profile →</span>}
             </div>
             <div style={{display:'flex',gap:8,marginTop:12}}>
-              {[['🏠','Unit '+seller.unit],['📅','Since '+seller.since],['⚡','Replies ~1h']].map(([e,l])=>(
+              {[['🏠','Unit '+(seller.unit||'—')],['🌴','El Gouna'],['💬','In-app chat']].map(([e,l])=>(
                 <div key={l} style={{flex:1,background:'rgba(255,255,255,0.06)',borderRadius:11,padding:'8px 4px',textAlign:'center'}}>
                   <div style={{fontSize:13}}>{e}</div>
                   <div style={{fontSize:10,fontWeight:600,color:'rgba(255,255,255,0.75)',marginTop:2}}>{l}</div>

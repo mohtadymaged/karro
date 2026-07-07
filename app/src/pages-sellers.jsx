@@ -1,5 +1,6 @@
 import React from 'react';
-import { SELLERS, TESTIMONIALS } from './data.js';
+import { TESTIMONIALS } from './data.js';
+import { api } from './api.js';
 import { Particles, Stars } from './shared.jsx';
 import { ArrowLeft, Search, Check } from './icons.jsx';
 /* Sellers page */
@@ -7,9 +8,11 @@ const { useState, useEffect, useMemo } = React;
 
 const SellersPage = ({initialActive=null}) => {
   const [active, setActive] = useState(initialActive);
+  const [sellers, setSellers] = React.useState([]);
+  React.useEffect(()=>{ api.sellers().then(setSellers).catch(()=>{}); },[]);
   const [profileTab, setProfileTab] = useState('reviews');
   const [search, setSearch] = useState('');
-  const seller = SELLERS.find(s=>s.id===active);
+  const seller = sellers.find(s=>s.id===active);
   const reviews = active ? (TESTIMONIALS[active]||[]) : [];
   const avgRating = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : null;
 
@@ -24,7 +27,7 @@ const SellersPage = ({initialActive=null}) => {
           <div>
             <div style={{fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize:22,fontWeight:700,color:'#FFFFFF'}}>{seller.name}</div>
             <div style={{display:'flex',alignItems:'center',gap:6,marginTop:2}}>
-              <Stars rating={seller.rating} size={13}/>
+              <Stars rating={seller.rating||0} size={13}/>
               <span style={{fontSize:12,fontWeight:700,color:'#FF8A73'}}>{seller.rating}</span>
             </div>
             <div style={{display:'flex',gap:6,marginTop:6}}>
@@ -128,7 +131,8 @@ const SellersPage = ({initialActive=null}) => {
       </div>
       <div style={{padding:'14px 16px'}}>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-          {SELLERS.filter(s=>!search||s.name.toLowerCase().includes(search.toLowerCase())).map((s,i)=>(
+          {sellers.length===0&&<div style={{textAlign:'center',padding:'44px 24px',color:'var(--ink3)',fontSize:13,lineHeight:1.6}}>No stalls open yet.<br/>Post a listing and yours appears here 🛍️</div>}
+          {sellers.filter(s=>!search||s.name.toLowerCase().includes(search.toLowerCase())).map((s,i)=>(
             <button key={s.id} onClick={()=>{setActive(s.id);setProfileTab('reviews');}} className={`card-press s${i+1}`} style={{background:'var(--card)',borderRadius:18,padding:'16px',textAlign:'left',border:'1px solid rgba(20,160,155,0.1)',animation:'fadeUp .4s ease-out both'}}>
               <div style={{width:44,height:44,borderRadius:14,background:'linear-gradient(135deg,#BFE7E4,#7ED8D3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,marginBottom:10}}>{s.avatar}</div>
               <div style={{fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize:15,fontWeight:700,color:'var(--ink)',marginBottom:2}}>{s.name}</div>

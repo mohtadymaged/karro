@@ -1,5 +1,6 @@
 import React from 'react';
-import { AUCTION_BASE, CATS } from './data.js';
+import { CATS } from './data.js';
+import { api } from './api.js';
 import { ItemImage, Stars, DarkField } from './shared.jsx';
 import { NotifSheet, NOTIFS } from './pages-home.jsx';
 import { Bell, X } from './icons.jsx';
@@ -18,29 +19,17 @@ const AuctionsPage = () => {
   const [submitDone, setSubmitDone] = useState(false);
   const [form, setForm] = useState({title:'',cat:'',desc:'',startBid:'',reserve:'',duration:'48'});
   const [flash, setFlash] = useState({});
+  const [auctions, setAuctions] = useState([]);
+  useEffect(()=>{ api.auctions().then(setAuctions).catch(()=>{}); },[]);
   const [showNotifs, setShowNotifs] = useState(false);
   const setF = (k,v) => setForm(f=>({...f,[k]:v}));
 
-  /* live bid ticker */
-  useEffect(()=>{
-    const iv=setInterval(()=>{
-      const live=AUCTION_BASE.filter(a=>a.status==='live');
-      const r=live[Math.floor(Math.random()*live.length)];
-      if(r){
-        const inc=Math.floor(Math.random()*75)+25;
-        setBids(p=>({...p,[r.id]:(p[r.id]||r.currentBid)+inc}));
-        setBidCounts(p=>({...p,[r.id]:(p[r.id]||r.bids)+1}));
-        setFlash(p=>({...p,[r.id]:true}));
-        setTimeout(()=>setFlash(p=>({...p,[r.id]:false})),600);
-      }
-    },4500);
-    return()=>clearInterval(iv);
-  },[]);
+  // Fake bid ticker removed — bids are real member actions now.
 
   const getBid = a => bids[a.id] || a.currentBid;
   const getCnt = a => bidCounts[a.id] || a.bids;
-  const live = AUCTION_BASE.filter(a=>a.status==='live');
-  const review = AUCTION_BASE.filter(a=>a.status==='review');
+  const live = auctions.filter(a=>a.status==='live');
+  const review = auctions.filter(a=>a.status==='review');
   const urgent = live.filter(a=>a.endH<2);
   const display = filter==='ending'?urgent:filter==='review'?review:live;
 
