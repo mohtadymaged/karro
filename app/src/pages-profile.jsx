@@ -3,8 +3,31 @@ import { LISTINGS, TESTIMONIALS, MY_LISTINGS } from './data.js';
 import { ItemImage } from './shared.jsx';
 import { ArrowLeft, Check, ChevronRight, X } from './icons.jsx';
 import { DeleteAccountSheet } from './trust-safety.jsx';
+import { api } from './api.js';
 /* Profile page — matches reference layout: header, avatar+Edit, ID, member badge, settings list, edit-profile subview */
 const AVATAR_PRESETS = ['🧑','👩','👨','🧑‍🌾','🦊','🐢','🐝','🌻','🌱','🍉','⚽','🎨'];
+
+/* Hoisted out of ProfilePage: defining components inside a component
+   remounts them on every render — inputs lost focus on each keystroke. */
+const Avatar = ({avatar, name, size=104, radius=null, fontSize=44}) => (
+  <div style={{width:size,height:size,borderRadius:radius==null?'50%':radius,background:'linear-gradient(135deg,#FF6A55,#FF8A73)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize,fontWeight:900,color:'#0E4B54',overflow:'hidden',boxShadow:'0 8px 24px rgba(255,106,85,0.35)'}}>
+    {avatar&&avatar.type==='img'?<img src={avatar.src} alt="Your avatar" style={{width:'100%',height:'100%',objectFit:'cover'}}/>:avatar&&avatar.type==='emoji'?avatar.v:name.charAt(0)}
+  </div>
+);
+
+const SubHeader = ({title, onBack}) => (
+  <div style={{display:'flex',alignItems:'center',padding:'58px 16px 14px',position:'relative'}}>
+    <button onClick={onBack} aria-label="Back" style={{width:38,height:38,borderRadius:12,background:'rgba(20,160,155,0.08)',border:'1px solid rgba(20,160,155,0.15)',display:'flex',alignItems:'center',justifyContent:'center',color:'#14A09B',zIndex:1}}><ArrowLeft size={17} strokeWidth={2.3}/></button>
+    <div style={{position:'absolute',left:0,right:0,textAlign:'center',fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize:18,fontWeight:700,color:'var(--ink)'}}>{title}</div>
+  </div>
+);
+
+const Field = ({label, children}) => (
+  <div style={{marginBottom:16}}>
+    <label style={{display:'block',fontSize:13,fontWeight:700,color:'var(--ink)',marginBottom:8}}>{label}</label>
+    {children}
+  </div>
+);
 
 const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light', setTheme=()=>{}, username=''}) => {
   const { useState, useRef } = React;
@@ -36,39 +59,21 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
   const saveProfile = () => {
     const p = {name:form.name||defaultName, phone:form.phone, dob:form.dob};
     setProfile(p); try{localStorage.setItem('gt_profile', JSON.stringify(p));}catch(e){}
+    api.updateMe(p).catch(()=>{}); // server copy — listings pick up the new name
     setSavedModal(true);
   };
 
   const PURCHASES = []; // real purchase history arrives with the offers/checkout flow
   const favorites = LISTINGS.slice(0,4);
 
-  const Avatar = ({size=104, radius=null, fontSize=44}) => (
-    <div style={{width:size,height:size,borderRadius:radius==null?'50%':radius,background:'linear-gradient(135deg,#FF6A55,#FF8A73)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize,fontWeight:900,color:'#0E4B54',overflow:'hidden',boxShadow:'0 8px 24px rgba(255,106,85,0.35)'}}>
-      {avatar&&avatar.type==='img'?<img src={avatar.src} alt="Your avatar" style={{width:'100%',height:'100%',objectFit:'cover'}}/>:avatar&&avatar.type==='emoji'?avatar.v:name.charAt(0)}
-    </div>
-  );
-
-  const SubHeader = ({title}) => (
-    <div style={{display:'flex',alignItems:'center',padding:'58px 16px 14px',position:'relative'}}>
-      <button onClick={()=>setView('main')} aria-label="Back" style={{width:38,height:38,borderRadius:12,background:'rgba(20,160,155,0.08)',border:'1px solid rgba(20,160,155,0.15)',display:'flex',alignItems:'center',justifyContent:'center',color:'#14A09B',zIndex:1}}><ArrowLeft size={17} strokeWidth={2.3}/></button>
-      <div style={{position:'absolute',left:0,right:0,textAlign:'center',fontFamily:"'Baloo Bhaijaan 2',sans-serif",fontSize:18,fontWeight:700,color:'var(--ink)'}}>{title}</div>
-    </div>
-  );
-
-  const Field = ({label, children}) => (
-    <div style={{marginBottom:16}}>
-      <label style={{display:'block',fontSize:13,fontWeight:700,color:'var(--ink)',marginBottom:8}}>{label}</label>
-      {children}
-    </div>
-  );
 
   /* ─── EDIT PROFILE ─────────────────────────────────── */
   if(view==='edit') return (
     <div style={{flex:1,overflowY:'auto',paddingBottom:90}} className="sh">
-      <SubHeader title="Edit Profile"/>
+      <SubHeader title="Edit Profile" onBack={()=>setView('main')}/>
       <div style={{display:'flex',justifyContent:'center',padding:'14px 0 26px'}}>
         <div style={{position:'relative'}}>
-          <Avatar/>
+          <Avatar avatar={avatar} name={name}/>
           <button onClick={()=>setPickOpen(true)} aria-label="Change photo" style={{position:'absolute',bottom:2,right:2,width:32,height:32,borderRadius:'50%',background:'#14A09B',border:'2.5px solid #FFFFFF',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,boxShadow:'0 3px 10px rgba(0,0,0,0.25)'}}>📷</button>
         </div>
       </div>
@@ -115,7 +120,7 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
   /* ─── PAST PURCHASES ───────────────────────────────── */
   if(view==='purchases') return (
     <div style={{flex:1,overflowY:'auto',paddingBottom:90}} className="sh">
-      <SubHeader title="Past Purchases"/>
+      <SubHeader title="Past Purchases" onBack={()=>setView('main')}/>
       {PURCHASES.length===0&&(
         <div style={{textAlign:'center',padding:'56px 32px'}}>
           <div style={{fontSize:44,marginBottom:14,animation:'floatSlow 4s ease-in-out infinite'}}>🛍️</div>
@@ -145,7 +150,7 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
   /* ─── FAVORITES ────────────────────────────────────── */
   if(view==='favorites') return (
     <div style={{flex:1,overflowY:'auto',paddingBottom:90}} className="sh">
-      <SubHeader title="My Favorites"/>
+      <SubHeader title="My Favorites" onBack={()=>setView('main')}/>
       {favorites.length===0&&(
         <div style={{textAlign:'center',padding:'56px 32px'}}>
           <div style={{fontSize:44,marginBottom:14,animation:'floatSlow 4s ease-in-out infinite'}}>❤️</div>
@@ -222,7 +227,7 @@ const ProfilePage = ({onNav, onItemSelect, onSignOut, onOpenStall, theme='Light'
       {/* Identity */}
       <div style={{textAlign:'center',padding:'12px 20px 4px'}}>
         <div style={{position:'relative',display:'inline-block',animation:'avatarIn .55s cubic-bezier(0.34,1.56,0.64,1) both'}}>
-          <Avatar size={100} fontSize={42}/>
+          <Avatar avatar={avatar} name={name} size={100} fontSize={42}/>
           {verified&&<span style={{position:'absolute',top:2,right:2,width:26,height:26,borderRadius:'50%',background:'linear-gradient(135deg,#14A09B,#0D7E7A)',border:'2.5px solid var(--bg)',display:'flex',alignItems:'center',justifyContent:'center',color:'#FFFFFF',boxShadow:'0 3px 10px rgba(20,160,155,0.4)'}}><Check size={13} strokeWidth={3}/></span>}
           <button onClick={()=>setView('edit')} style={{position:'absolute',bottom:-8,left:'50%',transform:'translateX(-50%)',display:'flex',alignItems:'center',gap:4,background:'var(--card)',border:'1px solid rgba(20,160,155,0.2)',borderRadius:100,padding:'5px 12px',fontSize:11,fontWeight:700,color:'#14A09B',boxShadow:'0 3px 10px rgba(0,0,0,0.12)'}}>✏️ Edit</button>
         </div>

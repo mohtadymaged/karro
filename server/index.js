@@ -96,6 +96,23 @@ app.get('/api/me', auth, (req, res) => {
   res.json({ user: publicUser(db.users.find((u) => u.id === req.uid)) });
 });
 
+app.patch('/api/me', auth, (req, res) => {
+  const db = getDb();
+  const user = db.users.find((u) => u.id === req.uid);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const { name, phone, dob } = req.body || {};
+  if (name && String(name).trim()) {
+    const newName = String(name).trim().slice(0, 80);
+    // keep listings' display name in sync
+    db.listings.forEach((l) => { if (l.sellerId === user.id) l.seller = newName; });
+    user.name = newName;
+  }
+  if (phone !== undefined) user.phone = String(phone).slice(0, 30);
+  if (dob !== undefined) user.dob = String(dob).slice(0, 20);
+  save();
+  res.json({ user: publicUser(user) });
+});
+
 // ── Catalogue ──────────────────────────────────────────────
 app.get('/api/categories', (_req, res) => res.json(CATS));
 

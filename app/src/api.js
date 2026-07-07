@@ -52,6 +52,7 @@ export const api = {
   bid: (id, amount) => req(`/auctions/${id}/bid`, { method: 'POST', body: { amount } }),
   // Push notifications
   registerDeviceToken: (token) => req('/users/me/device-token', { method: 'POST', body: { token } }),
+  updateMe: (b) => req('/me', { method: 'PATCH', body: b }),
   // Advertising
   applyAd: (b) => req('/ads/apply', { method: 'POST', body: b }),
   // App Store compliance
